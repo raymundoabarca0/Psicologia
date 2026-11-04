@@ -1,7 +1,7 @@
 # Trading Bot (Binance Spot) — seguridad primero
 
-> **Estado: Etapa 1 de 4.** Están listos la configuración, la gestión de riesgo, la validación de órdenes, la validación y descarga de datos, y sus tests.
-> **El bot todavía NO opera.** El backtest (Etapa 2), el paper trading (Etapa 3) y el modo real (Etapa 4) llegan después, en ese orden y sin saltarse ninguna etapa.
+> **Estado: Etapa 2 de 4.** El backtest walk-forward está listo. **Ninguna de las tres estrategias candidatas mostró una ventaja robusta después de costes.** Ver [`backtest/RESULTADOS_ETAPA2.md`](backtest/RESULTADOS_ETAPA2.md).
+> **El bot todavía NO opera.** El paper trading (Etapa 3) solo empezará con una estrategia que pase el backtest.
 
 Prioridades: **1) no perder capital por errores; 2) respetar los límites de riesgo; 3) rentabilidad.**
 
@@ -26,6 +26,18 @@ python -m bot.data.downloader --symbol ETH/USDT --timeframe 4h --since 2020-01-0
 ```
 
 Los datos se guardan en `data/*.parquet`. Esa carpeta no se sube a git.
+
+Si `api.binance.com` no es accesible desde tu red (por ejemplo, desde servidores en EE. UU.), usa el espejo público de datos con `--public-api https://data-api.binance.vision/api/v3`.
+
+## Backtest
+
+```bash
+python -m backtest.run --capital 100                      # todas las reglas activas
+python -m backtest.run --capital 100 --risk-pct 0.5       # riesgo más bajo (permitido)
+python -m backtest.run --capital 100 --diagnostic-no-dd-halt   # SOLO análisis
+```
+
+El backtest hace walk-forward (2 años de entrenamiento y 6 meses de prueba), con comisión, slippage y spread, más una prueba de estrés con costes al doble. Los reportes se guardan en `reports/`.
 
 ## Configuración
 

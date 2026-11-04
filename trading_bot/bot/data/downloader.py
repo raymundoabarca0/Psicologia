@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -95,10 +96,23 @@ def main() -> None:  # pragma: no cover - CLI
     ap.add_argument("--since", required=True, help="YYYY-MM-DD (UTC)")
     ap.add_argument("--until", default=None, help="YYYY-MM-DD (UTC), por defecto ahora")
     ap.add_argument("--data-dir", default="data")
+    ap.add_argument("--public-api", default=None,
+                    help="URL alternativa de la API pública (p. ej. el espejo de datos de "
+                         "Binance https://data-api.binance.vision/api/v3)")
     args = ap.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
-    ex = getattr(ccxt, args.exchange)({"enableRateLimit": True})
+    ex = getattr(ccxt, args.exchange)({
+        "enableRateLimit": True,
+        # Solo spot: no cargar mercados de futuros/margen (ni sus endpoints).
+        "options": {"defaultType": "spot", "fetchMarkets": {"types": ["spot"]}},
+    })
+    if args.public_api:
+        ex.urls["api"]["public"] = args.public_api
+    # ccxt ignora las variables de proxy del entorno; se las pasamos si existen.
+    proxy = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
+    if proxy:
+        ex.httpsProxy = proxy
     since = datetime.fromisoformat(args.since).replace(tzinfo=timezone.utc)
     until = (datetime.fromisoformat(args.until).replace(tzinfo=timezone.utc)
              if args.until else datetime.now(timezone.utc))

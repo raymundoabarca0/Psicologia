@@ -69,6 +69,9 @@ class RiskConfig(_Strict):
     # Zona horaria en la que se reinicia el "día" para el límite diario.
     day_reset_timezone: str = "UTC"
     leverage: float = Field(default=1.0, gt=0)
+    # Margen de saldo libre que nunca se usa (cubre slippage y comisiones de
+    # órdenes a mercado; debe ser >= orders.max_price_deviation_pct + comisión).
+    cash_buffer_pct: float = Field(default=2.0, ge=0, le=50)
 
     @model_validator(mode="after")
     def _within_hard_limits(self) -> "RiskConfig":

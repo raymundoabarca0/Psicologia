@@ -159,7 +159,8 @@ class RiskManager:
         max_notional = min(
             account.equity * self.max_pos_pct / 100.0,
             exposure_room,
-            account.free_quote,  # sin apalancamiento: solo saldo libre real
+            # Sin apalancamiento: solo saldo libre real, menos un colchón.
+            account.free_quote * (1 - self.cfg.cash_buffer_pct / 100.0),
         )
         if max_notional <= 0:
             return RiskDecision.reject("sin margen de exposición / saldo libre")

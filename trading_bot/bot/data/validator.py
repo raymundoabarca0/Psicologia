@@ -56,7 +56,13 @@ def clean_ohlcv(
     *,
     max_bar_move_pct: float,
     now: datetime | None = None,
+    drop_anomalies: bool = True,
 ) -> ValidationResult:
+    """drop_anomalies=True (operativa en vivo): las velas anómalas se descartan, lo
+    que deja un hueco y bloquea la operativa: lo más conservador.
+    drop_anomalies=False (backtest con datos históricos del propio exchange): se
+    marcan pero se CONSERVAN. Descartar un desplome real (p. ej. 19-may-2021)
+    ocultaría los stops que saltaron y haría el backtest optimista."""
     missing = [c for c in COLUMNS if c not in df.columns]
     if missing:
         raise ValueError(f"Faltan columnas: {missing}")
@@ -117,7 +123,8 @@ def clean_ohlcv(
         bad = spike | (wick_up > thr) | (wick_dn > thr)
         for ts in df.index[bad]:
             issues.append(DataIssue("anomaly", ts, f"movimiento anómalo > {max_bar_move_pct}%"))
-        df = df[~bad]
+        if drop_anomalies:
+            df = df[~bad]
 
     # Huecos
     if len(df) > 1:

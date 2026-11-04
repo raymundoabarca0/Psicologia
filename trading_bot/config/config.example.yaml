@@ -26,6 +26,7 @@ risk:
   max_stop_distance_pct: 20.0
   day_reset_timezone: UTC
   leverage: 1.0                 # máx. 1.0 (sin apalancamiento)
+  cash_buffer_pct: 2.0          # saldo libre que nunca se usa
 
 costs:
   fee_rate: 0.001               # 0.1% por lado (taker Binance sin BNB)

@@ -72,7 +72,14 @@ def test_extreme_wick_removed():
     df = frame(10)
     df.iloc[4, df.columns.get_loc("low")] = df.iloc[4]["low"] * 0.5
     r = clean(df)
-    assert r.count("anomaly") == 1
+    assert r.count("anomaly") == 1 and len(r.df) == 9
+
+
+def test_anomalies_kept_but_flagged_for_backtest():
+    df = frame(10)
+    df.iloc[4, df.columns.get_loc("low")] = df.iloc[4]["low"] * 0.5
+    r = clean_ohlcv(df, TF, max_bar_move_pct=25.0, drop_anomalies=False)
+    assert r.count("anomaly") == 1 and len(r.df) == 10
 
 
 def test_unclosed_candle_dropped():

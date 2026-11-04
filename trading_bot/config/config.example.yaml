@@ -1,0 +1,53 @@
+# Copia este archivo a config/config.yaml y ajústalo.
+# Los secretos (API keys, tokens) NO van aquí: van en .env (ver config/.env.example).
+
+# Modo real: requiere live_trading: true AQUÍ y LIVE_TRADING=true en el entorno.
+# Si falta cualquiera de las dos, el bot arranca en modo simulado (paper).
+live_trading: false
+
+exchange:
+  name: binance
+  symbols: [BTC/USDT, ETH/USDT]
+  quote_currency: USDT
+  timeframe: 4h
+  paper_backend: testnet        # testnet | simulated
+  request_timeout_ms: 10000
+
+# Los valores de riesgo solo pueden ser IGUALES O MÁS ESTRICTOS que los límites
+# duros de bot/risk/hard_limits.py. Valores más laxos hacen fallar el arranque.
+risk:
+  risk_per_trade_pct: 1.0       # máx. 1.0
+  max_daily_loss_pct: 3.0       # máx. 3.0 -> pausa hasta el día siguiente
+  max_drawdown_pct: 10.0        # máx. 10.0 -> apagado, reinicio manual
+  max_open_positions: 3         # máx. 3
+  max_trades_per_day: 4         # máx. 10
+  max_position_pct_of_equity: 33.0
+  min_stop_distance_pct: 0.3
+  max_stop_distance_pct: 20.0
+  day_reset_timezone: UTC
+  leverage: 1.0                 # máx. 1.0 (sin apalancamiento)
+
+costs:
+  fee_rate: 0.001               # 0.1% por lado (taker Binance sin BNB)
+  slippage_rate: 0.0005         # 0.05%
+  spread_rate: 0.0002           # 0.02%
+
+orders:
+  max_price_deviation_pct: 1.0  # rechaza órdenes > 1% del último precio
+  stop_limit_buffer_pct: 0.5
+  client_order_id_prefix: tb
+
+data:
+  data_dir: data
+  max_bar_move_pct: 25.0
+  required_clean_bars: 250
+  max_staleness_bars: 1.5
+
+safety:
+  kill_switch_file: KILL
+  halt_file: HALTED
+  max_consecutive_errors: 5
+  volatility_pause_atr_multiple: 4.0
+
+alerts:
+  channel: telegram             # telegram | email | none

@@ -1,0 +1,22 @@
+# Secretos
+.env
+*.env
+!config/.env.example
+# Configuración local
+config/config.yaml
+# Datos, estado y logs
+data/*
+!data/.gitkeep
+logs/*
+!logs/.gitkeep
+*.db
+*.sqlite
+KILL
+HALTED
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+reports/

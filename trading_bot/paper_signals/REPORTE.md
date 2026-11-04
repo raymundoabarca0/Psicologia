@@ -1,6 +1,6 @@
 # Experimento de señales en paper — reporte
 
-Generado: 2026-11-04 22:32 UTC · capital simulado 100 USD · riesgo 1.0% por operación · sin apalancamiento
+Generado: 2026-11-04 22:36 UTC · capital simulado 100 USD · riesgo 1.0% por operación · sin apalancamiento
 
 |   id | creada           | activo   | dir   | tipo   |   entrada |   stop |    tp | estado    | ejecutada   | salida   |   pnl_usd |   R |   comisiones |
 |-----:|:-----------------|:---------|:------|:-------|----------:|-------:|------:|:----------|:------------|:---------|----------:|----:|-------------:|

@@ -1,0 +1,37 @@
+[
+  {
+    "created_utc": "2026-11-04T22:40:00+00:00",
+    "asset": "EUR",
+    "symbol": "EURUSDT",
+    "levels": [
+      {
+        "price": 1.13,
+        "label": "Techo rango"
+      },
+      {
+        "price": 1.11,
+        "label": "Piso rango"
+      }
+    ],
+    "path": [
+      [
+        0,
+        1.1238
+      ],
+      [
+        4,
+        1.129
+      ],
+      [
+        10,
+        1.119
+      ],
+      [
+        16,
+        1.124
+      ]
+    ],
+    "why": "Diario bajista (bajo EMA20/50/200, ADX 30), pero en 4h el precio está en un rango sin dirección (ADX 19) entre 1,1100 y 1,1300, justo en las EMAs. Además, vender euro sería apostar otra vez a un dólar fuerte, igual que la venta de oro: duplicaría el riesgo.",
+    "expect": "Que siga lateral entre 1,1100 y 1,1300. Buscaré venta si sube a 1,1300 y es rechazado, o si rompe y cierra por debajo de 1,1100. Mientras siga en medio del rango no hay operación."
+  }
+]

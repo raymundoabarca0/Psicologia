@@ -2,6 +2,7 @@
 
 Fuente: espejo público de datos de Binance (sin API key).
 - BTC: BTCUSDT.
+- Euro: EURUSDT (euro contra USDT; sigue a EUR/USD de forex de cerca).
 - Oro: PAXGUSDT (token respaldado 1:1 por una onza troy de oro; sigue a XAU/USD
   con una pequeña prima o descuento). Es un sustituto, no el XAU/USD de forex.
 """
@@ -12,7 +13,7 @@ import pandas as pd
 import requests
 
 BASE = "https://data-api.binance.vision/api/v3"
-ASSETS = {"BTC": "BTCUSDT", "ORO": "PAXGUSDT"}
+ASSETS = {"BTC": "BTCUSDT", "ORO": "PAXGUSDT", "EUR": "EURUSDT"}
 
 
 def klines(symbol: str, interval: str, *, limit: int = 1000,

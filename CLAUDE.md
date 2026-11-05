@@ -10,6 +10,14 @@ Este repositorio tiene dos cosas:
 El usuario habla español (México). Prioridad absoluta: proteger el capital y evitar
 errores; la rentabilidad es secundaria. Ser honesto: si algo no funciona o pierde, decirlo.
 
+## Límites acordados con el usuario
+
+- No operar por el usuario: él confirma y coloca cada orden a mano (desde el celular).
+- Sin scalping: nada de 1m ni 5m. Solo 15m, 30m, 1h, 4h (y D1 para dirección).
+- No borrar nada del repositorio Psicologia; se deja como está.
+- Caveman mode activo por defecto (señales y advertencias completas); "normal mode" lo quita.
+- Capital real previsto: 100 USD; todavía no opera con dinero real.
+
 ## Estado (2026-11-05)
 
 - Etapa 1 (riesgo, validación de órdenes y datos) y Etapa 2 (backtest walk-forward) hechas.

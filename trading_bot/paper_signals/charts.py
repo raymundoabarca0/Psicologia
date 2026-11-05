@@ -102,7 +102,7 @@ def render(*, asset: str, symbol: str, title: str, created: pd.Timestamp, tf: st
     ax.plot(px, py, color=PATH, linewidth=2.2, linestyle=(0, (5, 3)), zorder=5)
     ax.annotate("", xy=(px[-1], py[-1]), xytext=(px[-2], py[-2]),
                 arrowprops=dict(arrowstyle="-|>", color=PATH, lw=2.2), zorder=5)
-    ax.annotate("Escenario esperado", xy=(px[1], py[1]), xytext=(8, 8),
+    ax.annotate("Escenario esperado", xy=(px[-2], py[-2]), xytext=(6, -16),
                 textcoords="offset points", fontsize=9, color=INK, fontweight="bold")
     ax.axvline(created, color=INK_2, linewidth=1, linestyle=":")
     ax.annotate(f"Señal {created:%d-%b %H:%M} UTC", xy=(created, 1), xycoords=("data", "axes fraction"),

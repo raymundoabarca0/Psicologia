@@ -3,7 +3,9 @@
 Este repositorio tiene dos cosas:
 - `PaginaWebAGR.html`: página web (no tocar salvo que el usuario lo pida).
 - `trading_bot/`: bot de trading y experimento de señales en paper. Rama de trabajo:
-  `claude/python-automated-trading-bot-jgl2zz`.
+  `claude/new-session-1mlq7o` (desde el 2026-11-05; parte del mismo commit que
+  `claude/python-automated-trading-bot-jgl2zz`, que queda como rama anterior; juntarlas al
+  final del experimento).
 
 El usuario habla español (México). Prioridad absoluta: proteger el capital y evitar
 errores; la rentabilidad es secundaria. Ser honesto: si algo no funciona o pierde, decirlo.
@@ -54,7 +56,8 @@ errores; la rentabilidad es secundaria. Ser honesto: si algo no funciona o pierd
 
 ## Análisis diario
 
-Tarea programada diaria a las 12:10 UTC (14:10 del servidor). Si esta es una sesión nueva,
+Tarea programada diaria a las 12:10 UTC (14:10 del servidor), en la sesión del 2026-11-05
+(rama `claude/new-session-1mlq7o`). Si esta es una sesión nueva,
 el usuario puede pedir recrearla aquí; en ese caso borrar la de la sesión anterior para no
 duplicar. El 2026-11-11: reporte final honesto y preguntar si se continúa.
 

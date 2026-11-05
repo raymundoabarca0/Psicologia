@@ -68,5 +68,40 @@
     ],
     "why": "Sin cambios: el diario sigue bajista (bajo EMA50/200, ADX 31) y el 4h sigue en rango sin dirección (ADX 18) a mitad de camino entre 1,1100 y 1,1300. Mantengo fuera el euro para no duplicar la apuesta a dólar fuerte del oro.",
     "expect": "Lateral entre 1,1100 y 1,1300. Venta solo con rechazo en 1,1300 o con cierre de 4h bajo 1,1100."
+  },
+  {
+    "created_utc": "2026-11-05T12:15:00+00:00",
+    "asset": "EUR",
+    "symbol": "EURUSDT",
+    "levels": [
+      {
+        "price": 1.13,
+        "label": "Techo rango"
+      },
+      {
+        "price": 1.11,
+        "label": "Piso rango"
+      }
+    ],
+    "path": [
+      [
+        0,
+        1.123
+      ],
+      [
+        2,
+        1.125
+      ],
+      [
+        6,
+        1.119
+      ],
+      [
+        10,
+        1.123
+      ]
+    ],
+    "why": "4h bajista pero sin tendencia (ADX 16) y aún dentro del rango 1,1100-1,1300. En 15m cayó fuerte de 1,1278 a 1,1226 y está sobrevendido (RSI 25): vender ahora sería perseguir el precio, y a mitad del rango no hay ventaja.",
+    "expect": "Rebote corto hacia 1,1250 y luego seguir lateral-bajista dentro del rango. Venta solo con rechazo en 1,1300 o cierre de 4h bajo 1,1100; compra no, mientras el diario siga bajista."
   }
 ]

@@ -164,6 +164,12 @@ def chart_signals() -> list[Path]:
         kind = "limitada" if s.entry_type == "limit" else "a mercado"
         levels = [(s.entry, "Entrada", "entry", "--"), (s.stop, "Stop-loss", "stop", "-"),
                   (s.take_profit, "Take-profit", "tp", "-")]
+        if str(getattr(s, "gestion", "") or "") == "parcial":
+            one_r = abs(s.entry - s.stop) * (1 if s.direction == "long" else -1)
+            levels.append((s.entry + one_r, "Cierre 50% (+1R)", "tp", ":"))
+        prob = getattr(s, "prob", None)
+        if isinstance(prob, float) and prob == prob:
+            detail = (detail + " · " if detail else "") + f"probabilidad estimada {prob:.0%}"
         expect = getattr(s, "expectativa", "") or ""
         outs.append(render(
             asset=s.asset, symbol=s.symbol, created=created, tf=_tf(s),

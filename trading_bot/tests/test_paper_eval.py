@@ -89,3 +89,25 @@ def test_without_rule_stop_stays():
             (11_000, 11_010, 9_995, 10_000)]
     p = _simulate(psig(gestion=""), bars(rows))
     assert p.status == "abierta"
+
+
+def test_partial_takes_half_at_1r_then_rest_at_breakeven():
+    rows = [(10_100, 10_100, 9_990, 10_050),     # entra
+            (10_050, 11_050, 10_040, 11_000),    # toca +1R: cierra la mitad, stop a entrada
+            (11_000, 11_010, 9_995, 10_000)]     # el resto sale en la entrada
+    p = _simulate(psig(gestion="parcial"), bars(rows))
+    assert p.partial_price == pytest.approx(11_000 - 12.5)
+    assert p.status == "stop_protegido" and p.exit_price > 9_990
+
+
+def test_partial_then_tp():
+    rows = [(10_100, 10_100, 9_990, 10_050), (10_050, 11_050, 10_040, 11_000),
+            (11_000, 13_100, 10_990, 13_000)]
+    p = _simulate(psig(gestion="parcial"), bars(rows))
+    assert p.partial_price is not None and p.status == "tp"
+
+
+def test_stop_before_partial_in_same_bar():
+    rows = [(10_100, 10_100, 9_990, 10_050), (10_050, 11_050, 8_900, 9_000)]
+    p = _simulate(psig(gestion="parcial"), bars(rows))
+    assert p.status == "stop" and p.partial_price is None

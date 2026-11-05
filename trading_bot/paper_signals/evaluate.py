@@ -9,6 +9,11 @@ Reglas (conservadoras, iguales para todas las señales):
 - Si en una vela se tocan stop y take-profit, cuenta el STOP.
 - Gap más allá del stop: sale a la apertura.
 - manual_close_utc: cierre a mercado decidido después (nunca con fecha pasada).
+- gestion = "parcial" (incluye "proteger"): al tocar +1R se cierra la MITAD de la
+  posición en +1R (orden límite) y el stop del resto pasa a la entrada; al ganar
+  +1,5R el stop del resto pasa a +0,5R. La otra mitad busca el take-profit.
+- prob: probabilidad estimada (0-1) de que la operación termine en ganancia. El
+  reporte compara las probabilidades con los resultados (calibración, Brier).
 - gestion = "proteger" (regla escrita en la señal ANTES de entrar): al ganar +1R
   el stop pasa a la entrada (+ spread); al ganar +1,5R pasa a +0,5R. Se calcula
   con el máximo/mínimo de cada vela cerrada y se aplica desde la vela siguiente.
@@ -49,6 +54,7 @@ class Path_:
     exit_time: pd.Timestamp | None = None
     exit_price: float | None = None
     mark_price: float | None = None
+    partial_price: float | None = None   # mitad cerrada en +1R (gestion = parcial)
 
 
 def _simulate(sig: pd.Series, bars: pd.DataFrame) -> Path_:
@@ -64,7 +70,9 @@ def _simulate(sig: pd.Series, bars: pd.DataFrame) -> Path_:
     stop, tp, entry = float(sig.stop), float(sig.take_profit), float(sig.entry)
     half = SPREAD[sig.symbol] / 2
     one_r = abs(entry - stop)
-    protect = str(sig.get("gestion", "") or "").strip() == "proteger"
+    gestion = str(sig.get("gestion", "") or "").strip()
+    protect = gestion in ("proteger", "parcial")
+    partial = gestion == "parcial"
     moved = False
     p = None
     for t, b in bars.iterrows():
@@ -103,6 +111,10 @@ def _simulate(sig: pd.Series, bars: pd.DataFrame) -> Path_:
         if hit_tp:
             p.status, p.exit_time, p.exit_price = "tp", t, tp - sgn * half
             return p
+        if partial and p.partial_price is None:
+            lvl = entry + sgn * one_r
+            if (b.high >= lvl) if long else (b.low <= lvl):
+                p.partial_price = lvl - sgn * half
         if protect:
             best = (b.high - entry) if long else (entry - b.low)
             new = None
@@ -143,11 +155,16 @@ def evaluate() -> pd.DataFrame:
         sgn = 1 if s.direction == "long" else -1
         # Costo implícito (spread pagado), ya incluido en los precios de ejecución.
         fees = qty * SPREAD[s.symbol] / 2 * (2 if p.exit_price is not None else 1)
+        last = p.exit_price if p.exit_price is not None else p.mark_price
+        if p.partial_price is not None:
+            pnl = sgn * qty / 2 * (p.partial_price - p.fill_price) + \
+                  sgn * qty / 2 * (last - p.fill_price)
+        else:
+            pnl = sgn * qty * (last - p.fill_price)
         if p.exit_price is not None:
-            pnl = sgn * qty * (p.exit_price - p.fill_price)
             closed.append((p.exit_time, pnl))
         else:
-            pnl = sgn * qty * (p.mark_price - p.fill_price) - fees  # no realizado
+            pnl -= fees  # no realizado: falta pagar la salida
         open_notional.append((p.exit_time, qty * p.fill_price))
         risk = eq * RISK_PCT / 100
         sized[s.id] = dict(qty=qty, pnl=pnl, fees=fees, r=pnl / risk if risk else 0.0)
@@ -162,10 +179,25 @@ def evaluate() -> pd.DataFrame:
             "ejecutada": f"{p.fill_price:,.2f}" if p.fill_price else "-",
             "salida": f"{p.exit_price:,.2f}" if p.exit_price else
                       (f"(mark {p.mark_price:,.2f})" if p.mark_price else "-"),
+            "parcial": f"{p.partial_price:,.2f}" if p.partial_price else "-",
+            "prob": getattr(s, "prob", float("nan")),
             "pnl_usd": round(z.get("pnl", 0.0), 3), "R": round(z.get("r", 0.0), 2),
             "costo_spread": round(z.get("fees", 0.0), 3),
         })
     return pd.DataFrame(rows)
+
+
+def _calibration(done: pd.DataFrame) -> str:
+    """Compara la probabilidad estimada con el resultado (ganó = P&L > 0)."""
+    d = done[pd.to_numeric(done.prob, errors="coerce").notna()]
+    if d.empty:
+        return "- Calibración: aún no hay operaciones cerradas con probabilidad estimada"
+    prob = pd.to_numeric(d.prob)
+    won = (d.pnl_usd > 0).astype(float)
+    brier = ((prob - won) ** 2).mean()
+    return (f"- Calibración ({len(d)} ops): probabilidad media estimada {prob.mean():.0%} "
+            f"vs acierto real {won.mean():.0%} · Brier {brier:.3f} "
+            "(0 = perfecto; 0,25 = como tirar una moneda)")
 
 
 def main() -> None:
@@ -189,6 +221,7 @@ def main() -> None:
         f"- Profit factor: {pf:.2f}" if pf == pf else "- Profit factor: n/d",
         f"- Costo de spread (ya incluido en el P&L): {df.costo_spread.sum():.2f} USD",
         f"- Equity estimado: {CAPITAL + realized + open_.pnl_usd.sum():.2f} USD",
+        _calibration(done),
         "",
         "Muestra pequeña: con pocas operaciones el resultado NO distingue habilidad de suerte.",
     ]

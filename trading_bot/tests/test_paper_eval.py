@@ -12,7 +12,7 @@ def bars(rows):
 
 
 def sig(**kw):
-    base = dict(direction="short", entry_type="limit", entry=100.0, stop=105.0,
+    base = dict(symbol="BTCUSDT", direction="short", entry_type="limit", entry=100.0, stop=105.0,
                 take_profit=90.0, created_utc=str(T0 - pd.Timedelta(minutes=30)),
                 expires_utc=str(T0 + pd.Timedelta(hours=48)), manual_close_utc=None)
     base.update(kw)
@@ -21,7 +21,8 @@ def sig(**kw):
 
 def test_short_limit_fills_then_tp():
     p = _simulate(sig(), bars([(98, 99, 97, 98), (99, 100.5, 98, 99), (99, 99, 89, 90)]))
-    assert p.status == "tp" and p.fill_price == 100 and p.exit_price == 90
+    assert p.status == "tp" and p.fill_price == pytest.approx(100 - 12.5)
+    assert p.exit_price == pytest.approx(90 + 12.5)
 
 
 def test_stop_first_when_both_hit():
@@ -36,7 +37,7 @@ def test_stop_in_fill_bar_counts():
 
 def test_gap_through_stop_exits_at_open():
     p = _simulate(sig(), bars([(99, 101, 98, 100), (110, 111, 109, 110)]))
-    assert p.status == "gap_stop" and p.exit_price == pytest.approx(110 * 1.0005)
+    assert p.status == "gap_stop" and p.exit_price == pytest.approx(110 + 25)
 
 
 def test_expires_if_not_touched():
@@ -48,7 +49,7 @@ def test_expires_if_not_touched():
 def test_long_market_and_open_mark():
     s = sig(direction="long", entry_type="market", entry=0, stop=95, take_profit=120)
     p = _simulate(s, bars([(100, 101, 99, 100), (100, 102, 99, 101)]))
-    assert p.status == "abierta" and p.fill_price == pytest.approx(100.05)
+    assert p.status == "abierta" and p.fill_price == pytest.approx(125)
     assert p.mark_price == 101
 
 

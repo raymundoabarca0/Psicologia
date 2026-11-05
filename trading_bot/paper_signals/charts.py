@@ -72,13 +72,13 @@ def _level(ax, y, label, color, x_end, style="-") -> None:
                 annotation_clip=False, zorder=6)
 
 
-def render(*, asset: str, symbol: str, title: str, created: pd.Timestamp,
+def render(*, asset: str, symbol: str, title: str, created: pd.Timestamp, tf: str = "4h",
            levels: list[tuple[float, str, str, str]], path: list[tuple[pd.Timestamp, float]],
            why: str, expect: str, status: str, detail: str, out: Path) -> Path:
-    bars = klines(symbol, "4h", limit=300)
+    bars = klines(symbol, tf, limit=500)
     ema200 = ind.ema(bars["close"], 200)
     before = bars[bars.index < created].iloc[-60:]
-    after = bars[bars.index >= created.floor("4h")]
+    after = bars[bars.index >= created.floor(tf.replace("m", "min"))]
     x_end = max(path[-1][0], after.index[-1] if len(after) else created) + pd.Timedelta(hours=8)
 
     fig, ax = plt.subplots(figsize=(11, 6.8), dpi=110)
@@ -90,7 +90,7 @@ def render(*, asset: str, symbol: str, title: str, created: pd.Timestamp,
         _candles(ax, after)
     e = ema200[ema200.index >= before.index[0]]
     ax.plot(e.index, e.values, color=EMA_C, linewidth=1.3, zorder=2)
-    ax.annotate(" EMA200 (4h)", xy=(e.index[-1], e.iloc[-1]), fontsize=8, color=INK_2,
+    ax.annotate(f" EMA200 ({tf})", xy=(e.index[-1], e.iloc[-1]), fontsize=8, color=INK_2,
                 va="bottom")
 
     for y, label, kind, style in levels:
@@ -115,7 +115,7 @@ def render(*, asset: str, symbol: str, title: str, created: pd.Timestamp,
     ax.tick_params(colors=INK_2, labelsize=8)
     for s in ax.spines.values():
         s.set_visible(False)
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%d-%b"))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%d-%b" if tf in ("4h", "1d") else "%d-%b %H:%M"))
     ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: fp(v)))
 
     fig.suptitle(title, x=0.06, y=0.975, ha="left", fontsize=14, fontweight="bold", color=INK)
@@ -133,8 +133,13 @@ def render(*, asset: str, symbol: str, title: str, created: pd.Timestamp,
     return out
 
 
+def _tf(sig) -> str:
+    tf = getattr(sig, "timeframe", None)
+    return tf if isinstance(tf, str) and tf else "4h"
+
+
 def _expected_path(sig, ref: float, created: pd.Timestamp) -> list:
-    h = pd.Timedelta(hours=4)
+    h = pd.Timedelta(_tf(sig).replace("m", "min"))
     if sig.entry_type == "limit":
         return [(created, ref), (created + 3 * h, sig.entry), (created + 16 * h, sig.take_profit)]
     return [(created, ref), (created + 14 * h, sig.take_profit)]
@@ -160,8 +165,8 @@ def chart_signals() -> list[Path]:
                   (s.take_profit, "Take-profit", "tp", "-")]
         expect = getattr(s, "expectativa", "") or ""
         outs.append(render(
-            asset=s.asset, symbol=s.symbol, created=created,
-            title=f"#{s.id} {s.asset} ({s.symbol}) 4h · {dirtxt} {kind} en {fp(s.entry)}",
+            asset=s.asset, symbol=s.symbol, created=created, tf=_tf(s),
+            title=f"#{s.id} {s.asset} ({s.symbol}) {_tf(s)} · {dirtxt} {kind} en {fp(s.entry)}",
             levels=levels, path=_expected_path(s, ref, created), why=s.rationale,
             expect=expect if isinstance(expect, str) else "", status=e.estado, detail=detail,
             out=OUT / f"senal_{s.id}_{s.asset}.png"))

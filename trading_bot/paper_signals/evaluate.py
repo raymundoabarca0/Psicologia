@@ -1,15 +1,17 @@
-"""Evalúa las señales registradas en signals.csv contra los precios reales (velas 1h).
+"""Evalúa las señales registradas en signals.csv contra los precios reales (velas 1m).
 
 Reglas (conservadoras, iguales para todas las señales):
 - Solo cuentan velas que empiezan DESPUÉS de registrar la señal.
-- market: entra a la apertura de la primera vela 1h posterior (+ slippage).
+- market: entra a la apertura de la primera vela 1m posterior (+ slippage).
 - limit: entra si el precio toca el nivel antes de `expires_utc`; si no, "expirada".
 - En la vela de entrada solo se comprueba el stop (si también se tocó el stop,
   se asume que saltó). El take-profit cuenta desde la vela siguiente.
 - Si en una vela se tocan stop y take-profit, cuenta el STOP.
 - Gap más allá del stop: sale a la apertura.
 - manual_close_utc: cierre a mercado decidido después (nunca con fecha pasada).
-- Comisión 0,1% por lado; slippage 0,05% en mercado/stop.
+- Costos tipo broker de CFD (MetaTrader): spread típico por activo, sin comisión.
+  Cada lado paga medio spread; las salidas por stop y las órdenes a mercado
+  pagan además medio spread de deslizamiento. Los take-profit (límite) no.
 - Capital simulado 100 USD; riesgo 1% del equity por operación; sin
   apalancamiento (nocional total <= equity).
 
@@ -30,9 +32,10 @@ SIGNALS = HERE / "signals.csv"
 REPORT = HERE / "REPORTE.md"
 CAPITAL = 100.0
 RISK_PCT = 1.0
-FEE = 0.001
-SLIP = 0.0005
+# Spread típico en precio (XAUUSD ~0,30 USD, EURUSD ~1,2 pips, BTCUSD ~25 USD).
+SPREAD = {"PAXGUSDT": 0.30, "EURUSDT": 0.00012, "BTCUSDT": 25.0}
 CASH_BUFFER = 0.02
+BAR = "1m"   # granularidad de la simulación (señales de 15m necesitan velas finas)
 
 
 @dataclass
@@ -51,46 +54,47 @@ def _simulate(sig: pd.Series, bars: pd.DataFrame) -> Path_:
     created = pd.Timestamp(sig.created_utc)
     expires = pd.Timestamp(sig.expires_utc)
     manual = pd.Timestamp(sig.manual_close_utc) if pd.notna(sig.manual_close_utc) else None
-    bars = bars[bars.index >= created.ceil("h")]
+    bars = bars[bars.index >= created.ceil(BAR.replace("m", "min"))]
     if bars.empty:
         return Path_("pendiente")
 
     stop, tp, entry = float(sig.stop), float(sig.take_profit), float(sig.entry)
+    half = SPREAD[sig.symbol] / 2
     p = None
     for t, b in bars.iterrows():
         if p is None:  # sin entrar todavía
             if manual is not None and t >= manual:
                 return Path_("cancelada")
             if sig.entry_type == "market":
-                fill = b.open * (1 + sgn * SLIP)
+                fill = b.open + sgn * 2 * half
             else:
                 if t >= expires:
                     return Path_("expirada")
                 touched = b.low <= entry if long else b.high >= entry
                 if not touched:
                     continue
-                fill = min(b.open, entry) if long else max(b.open, entry)
+                fill = (min(b.open, entry) if long else max(b.open, entry)) + sgn * half
             p = Path_("abierta", t, fill)
             # En la vela de entrada solo el stop (peor caso).
             if (b.low <= stop) if long else (b.high >= stop):
-                p.status, p.exit_time, p.exit_price = "stop", t, stop * (1 - sgn * SLIP)
+                p.status, p.exit_time, p.exit_price = "stop", t, stop - sgn * 2 * half
                 return p
             continue
 
         if manual is not None and t >= manual:
-            p.status, p.exit_time, p.exit_price = "manual", t, b.open * (1 - sgn * SLIP)
+            p.status, p.exit_time, p.exit_price = "manual", t, b.open - sgn * 2 * half
             return p
         gap = b.open <= stop if long else b.open >= stop
         hit_stop = b.low <= stop if long else b.high >= stop
         hit_tp = b.high >= tp if long else b.low <= tp
         if gap:
-            p.status, p.exit_time, p.exit_price = "gap_stop", t, b.open * (1 - sgn * SLIP)
+            p.status, p.exit_time, p.exit_price = "gap_stop", t, b.open - sgn * 2 * half
             return p
         if hit_stop:
-            p.status, p.exit_time, p.exit_price = "stop", t, stop * (1 - sgn * SLIP)
+            p.status, p.exit_time, p.exit_price = "stop", t, stop - sgn * 2 * half
             return p
         if hit_tp:
-            p.status, p.exit_time, p.exit_price = "tp", t, tp
+            p.status, p.exit_time, p.exit_price = "tp", t, tp - sgn * half
             return p
     if p is not None:
         p.mark_price = float(bars.close.iloc[-1])
@@ -102,7 +106,7 @@ def evaluate() -> pd.DataFrame:
     if "manual_close_utc" not in sigs:
         sigs["manual_close_utc"] = pd.NA
     start = pd.Timestamp(sigs.created_utc.min()).floor("h")
-    bars = {s: klines(s, "1h", start=start) for s in sigs.symbol.unique()}
+    bars = {s: klines(s, BAR, start=start) for s in sigs.symbol.unique()}
     paths = {r.id: _simulate(r, bars[r.symbol]) for r in sigs.itertuples(index=False)
              for r in [pd.Series(r._asdict())]}
 
@@ -116,15 +120,15 @@ def evaluate() -> pd.DataFrame:
         p = paths[s.id]
         eq = CAPITAL + sum(pnl for et, pnl in closed if et <= p.fill_time)
         used = sum(n for et, n in open_notional if et is None or et > p.fill_time)
-        per_unit = abs(p.fill_price - s.stop) + (p.fill_price + s.stop) * FEE + s.stop * SLIP
+        per_unit = abs(p.fill_price - s.stop) + SPREAD[s.symbol]   # peor caso
         qty = eq * RISK_PCT / 100 / per_unit
-        cap = max(0.0, eq * (1 - CASH_BUFFER) - used) / (p.fill_price * (1 + FEE))
+        cap = max(0.0, eq * (1 - CASH_BUFFER) - used) / p.fill_price
         qty = min(qty, cap)
         sgn = 1 if s.direction == "long" else -1
-        fees = qty * p.fill_price * FEE
+        # Costo implícito (spread pagado), ya incluido en los precios de ejecución.
+        fees = qty * SPREAD[s.symbol] / 2 * (2 if p.exit_price is not None else 1)
         if p.exit_price is not None:
-            fees += qty * p.exit_price * FEE
-            pnl = sgn * qty * (p.exit_price - p.fill_price) - fees
+            pnl = sgn * qty * (p.exit_price - p.fill_price)
             closed.append((p.exit_time, pnl))
         else:
             pnl = sgn * qty * (p.mark_price - p.fill_price) - fees  # no realizado
@@ -143,7 +147,7 @@ def evaluate() -> pd.DataFrame:
             "salida": f"{p.exit_price:,.2f}" if p.exit_price else
                       (f"(mark {p.mark_price:,.2f})" if p.mark_price else "-"),
             "pnl_usd": round(z.get("pnl", 0.0), 3), "R": round(z.get("r", 0.0), 2),
-            "comisiones": round(z.get("fees", 0.0), 3),
+            "costo_spread": round(z.get("fees", 0.0), 3),
         })
     return pd.DataFrame(rows)
 
@@ -167,7 +171,7 @@ def main() -> None:
         f"- P&L realizado: {realized:+.2f} USD ({realized / CAPITAL * 100:+.2f}%)",
         f"- P&L abierto (no realizado): {open_.pnl_usd.sum():+.2f} USD",
         f"- Profit factor: {pf:.2f}" if pf == pf else "- Profit factor: n/d",
-        f"- Comisiones: {df.comisiones.sum():.2f} USD",
+        f"- Costo de spread (ya incluido en el P&L): {df.costo_spread.sum():.2f} USD",
         f"- Equity estimado: {CAPITAL + realized + open_.pnl_usd.sum():.2f} USD",
         "",
         "Muestra pequeña: con pocas operaciones el resultado NO distingue habilidad de suerte.",

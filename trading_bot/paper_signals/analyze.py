@@ -50,8 +50,10 @@ def summary(name: str, df: pd.DataFrame, tf: str) -> str:
 
 
 def main() -> None:
+    import sys
+    tfs = sys.argv[1:] or ["1d", "4h"]   # p. ej.: python -m paper_signals.analyze 1h 15m
     for name, sym in ASSETS.items():
-        for tf in ("1d", "4h"):
+        for tf in tfs:
             print(summary(f"{name} ({sym})", klines(sym, tf, limit=400), tf))
             print()
 

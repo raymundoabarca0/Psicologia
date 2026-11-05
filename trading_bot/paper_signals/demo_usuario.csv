@@ -1,0 +1,3 @@
+senal,activo,direccion,lotes,entrada,salida,pnl_usd,nota
+2,XAUUSD,sell,0.10,4109.57,4122.00,-124.30,"Entró tarde (señal en ~4087 de su broker) y con lote menor al 1%; stop sin ajustar por la diferencia de precio"
+3,XAUUSD,buy,0.71,~4120.8,~4121.3,~0,"Subió el stop a la entrada al llegar a +1R (regla de protección); cerró en cero. Sin la regla: unos -1000 USD"

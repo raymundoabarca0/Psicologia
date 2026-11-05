@@ -9,6 +9,9 @@ Reglas (conservadoras, iguales para todas las señales):
 - Si en una vela se tocan stop y take-profit, cuenta el STOP.
 - Gap más allá del stop: sale a la apertura.
 - manual_close_utc: cierre a mercado decidido después (nunca con fecha pasada).
+- gestion = "proteger" (regla escrita en la señal ANTES de entrar): al ganar +1R
+  el stop pasa a la entrada (+ spread); al ganar +1,5R pasa a +0,5R. Se calcula
+  con el máximo/mínimo de cada vela cerrada y se aplica desde la vela siguiente.
 - Costos tipo broker de CFD (MetaTrader): spread típico por activo, sin comisión.
   Cada lado paga medio spread; las salidas por stop y las órdenes a mercado
   pagan además medio spread de deslizamiento. Los take-profit (límite) no.
@@ -60,6 +63,9 @@ def _simulate(sig: pd.Series, bars: pd.DataFrame) -> Path_:
 
     stop, tp, entry = float(sig.stop), float(sig.take_profit), float(sig.entry)
     half = SPREAD[sig.symbol] / 2
+    one_r = abs(entry - stop)
+    protect = str(sig.get("gestion", "") or "").strip() == "proteger"
+    moved = False
     p = None
     for t, b in bars.iterrows():
         if p is None:  # sin entrar todavía
@@ -91,11 +97,21 @@ def _simulate(sig: pd.Series, bars: pd.DataFrame) -> Path_:
             p.status, p.exit_time, p.exit_price = "gap_stop", t, b.open - sgn * 2 * half
             return p
         if hit_stop:
-            p.status, p.exit_time, p.exit_price = "stop", t, stop - sgn * 2 * half
+            status = "stop_protegido" if moved else "stop"
+            p.status, p.exit_time, p.exit_price = status, t, stop - sgn * 2 * half
             return p
         if hit_tp:
             p.status, p.exit_time, p.exit_price = "tp", t, tp - sgn * half
             return p
+        if protect:
+            best = (b.high - entry) if long else (entry - b.low)
+            new = None
+            if best >= 1.5 * one_r:
+                new = entry + sgn * 0.5 * one_r
+            elif best >= one_r:
+                new = entry + sgn * 2 * half
+            if new is not None and ((new > stop) if long else (new < stop)):
+                stop, moved = new, True
     if p is not None:
         p.mark_price = float(bars.close.iloc[-1])
     return p or Path_("pendiente")
@@ -154,7 +170,7 @@ def evaluate() -> pd.DataFrame:
 
 def main() -> None:
     df = evaluate()
-    done = df[df.estado.isin(["tp", "stop", "gap_stop", "manual"])]
+    done = df[df.estado.isin(["tp", "stop", "stop_protegido", "gap_stop", "manual"])]
     open_ = df[df.estado == "abierta"]
     realized = done.pnl_usd.sum()
     wins, losses = done[done.pnl_usd > 0], done[done.pnl_usd <= 0]

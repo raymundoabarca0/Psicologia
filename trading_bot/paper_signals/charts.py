@@ -48,6 +48,7 @@ STATUS_TXT = {
     "abierta": "EJECUTADA: posición abierta",
     "tp": "SE CUMPLIÓ: take-profit alcanzado",
     "stop": "NO SE CUMPLIÓ: saltó el stop-loss",
+    "stop_protegido": "CERRADA con el stop protegido (ganancia asegurada o en cero)",
     "gap_stop": "NO SE CUMPLIÓ: el precio saltó el stop (gap)",
     "manual": "CERRADA manualmente",
     "vigilancia": "SIN SEÑAL: solo niveles en vigilancia",
@@ -155,7 +156,7 @@ def chart_signals() -> list[Path]:
         ref = float(ref_bars.close.iloc[0])
         e = ev.loc[s.id]
         detail = ""
-        if e.estado in ("tp", "stop", "gap_stop", "manual", "abierta"):
+        if e.estado in ("tp", "stop", "stop_protegido", "gap_stop", "manual", "abierta"):
             detail = f"P&L {e.pnl_usd:+.2f} USD ({e.R:+.2f}R)"
             if e.estado == "abierta":
                 detail += " no realizado"

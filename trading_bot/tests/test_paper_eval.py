@@ -57,3 +57,35 @@ def test_ignores_bars_before_signal():
     s = sig(created_utc=str(T0 + pd.Timedelta(hours=1, minutes=5)))
     p = _simulate(s, bars([(99, 106, 98, 104), (95, 96, 94, 95), (95, 96, 94, 95)]))
     assert p.status == "pendiente" or p.fill_time is None
+
+
+def psig(**kw):
+    # Señal larga en precios grandes para que el spread de BTC (25) sea pequeño.
+    base = dict(direction="long", entry_type="limit", entry=10_000.0, stop=9_000.0,
+                take_profit=13_000.0, gestion="proteger")
+    base.update(kw)
+    return sig(**base)
+
+
+def test_protect_moves_stop_to_breakeven_after_1r():
+    rows = [(10_100, 10_100, 9_990, 10_050),     # entra
+            (10_050, 11_050, 10_040, 11_000),    # +1R -> stop a la entrada
+            (11_000, 11_010, 9_995, 10_000)]     # cae: sale en la entrada, no en 9.000
+    p = _simulate(psig(), bars(rows))
+    assert p.status == "stop_protegido"
+    assert p.exit_price > 9_990
+
+
+def test_protect_locks_half_r_after_1_5r():
+    rows = [(10_100, 10_100, 9_990, 10_050),
+            (10_050, 11_600, 10_040, 11_500),    # +1,6R -> stop a +0,5R (10.500)
+            (11_500, 11_510, 10_400, 10_450)]
+    p = _simulate(psig(), bars(rows))
+    assert p.status == "stop_protegido" and p.exit_price == pytest.approx(10_500 - 25)
+
+
+def test_without_rule_stop_stays():
+    rows = [(10_100, 10_100, 9_990, 10_050), (10_050, 11_050, 10_040, 11_000),
+            (11_000, 11_010, 9_995, 10_000)]
+    p = _simulate(psig(gestion=""), bars(rows))
+    assert p.status == "abierta"

@@ -76,6 +76,8 @@ HKUDS/Vibe-Trading (MIT): technical-basic, candlestick, smc, ichimoku, volatilit
 commodity-analysis, research-discipline, behavioral-finance. Son guías de metodología, sin
 ventaja probada. Antes de decidir, aplicar research-discipline (buscar evidencia en contra).
 No instalar AI-Trader (HKUDS): sus skills reciben instrucciones de un servidor externo.
+No instalar OmniRoute (cheaper-inference): pasarela de modelos de IA que maneja claves y
+puede interceptar HTTPS; no aporta al trading (decidido el 2026-11-06).
 
 ## Pendientes
 

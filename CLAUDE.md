@@ -31,6 +31,10 @@ errores; la rentabilidad es secundaria. Ser honesto: si algo no funciona o pierd
   - Herramientas: `python -m paper_signals.analyze 1d 4h` / `1h 30m 15m`,
     `python -m paper_signals.evaluate`, `python -m paper_signals.charts` (desde `trading_bot/`).
   - Al 2026-11-05: 2 operaciones cerradas, ambas perdedoras (simulación 98,66 USD de 100).
+- Twelve Data conectado (2026-11-06): la API key la inyecta el proxy en `api.twelvedata.com`
+  (no hay variable de entorno). Plan basic: 8 peticiones/min, 800/día. XAU/USD y EUR/USD
+  funcionan. Pasar siempre `timezone=UTC` (por defecto devuelve otra zona horaria).
+  Al conectar: XAU/USD ≈ PAXG + 1,3; EUR/USD ≈ EURUSDT − 11 pips. Falta integrarlo al código.
 - Datos: espejo público de Binance `data-api.binance.vision` (api.binance.com bloquea los
   servidores de EE. UU.). Oro = PAXGUSDT, euro = EURUSDT, BTC = BTCUSDT.
 
@@ -81,6 +85,5 @@ puede interceptar HTTPS; no aporta al trading (decidido el 2026-11-06).
 
 ## Pendientes
 
-- Twelve Data (API key) para precios reales de XAU/USD y EUR/USD.
 - Cuenta Paper de Interactive Brokers con 10.000 USD y su conector.
 - Etapa 3 (paper trading automático del bot) solo con una estrategia que pase el backtest.

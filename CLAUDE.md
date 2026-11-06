@@ -50,8 +50,9 @@ errores; la rentabilidad es secundaria. Ser honesto: si algo no funciona o pierd
   Oro: 100 onzas por lote (lotes = 1000 / (distancia al stop × 100)).
   Euro: 100.000 por lote (lotes = 1000 / (pips × 10)). BTC: tamaño de contrato por confirmar.
 - Diferencia de precios con su broker (aprox., recalcular con un precio actual):
-  XAUUSD ≈ PAXG + 9; EURUSD ≈ EURUSDT − 9 pips; BTCUSD ≈ BTCUSDT − 37 (medido contra
-  Binance; contra XAU/USD y EUR/USD de Twelve Data está por recalcular).
+  XAUUSD (su símbolo es "Gold Spot") ≈ XAU/USD de Twelve Data, diferencia ~0 (medido el
+  2026-11-06 19:33 del servidor: Bid 4.061,79 / Ask 4.062,13 vs XAU/USD 4.061,9). Su spread
+  de oro ≈ 0,34. EURUSD contra EUR/USD: por medir. BTCUSD ≈ BTCUSDT − 37 (contra Binance).
   Dar siempre los niveles en mis precios y en los de su broker.
 - Horas: siempre en hora del servidor de MetaTrader (UTC+2 = México + 8 h), formato
   AAAA.MM.DD HH:MM; opcionalmente la de México entre paréntesis.

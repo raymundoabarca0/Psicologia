@@ -25,7 +25,7 @@ ASSETS = {"BTC": "BTCUSDT", "ORO": "XAU/USD", "EUR": "EUR/USD"}
 # Sustitutos de Binance usados hasta el 2026-11-05 (para comparar o si Twelve Data falla).
 BINANCE_PROXY = {"XAU/USD": "PAXGUSDT", "EUR/USD": "EURUSDT"}
 
-TD_SYMBOLS = {"XAU/USD", "EUR/USD"}
+TD_SYMBOLS = {"XAU/USD", "EUR/USD"}   # además, cualquier símbolo con "/" va a Twelve Data
 TD_INTERVAL = {"1m": "1min", "5m": "5min", "15m": "15min", "30m": "30min",
                "1h": "1h", "4h": "4h", "1d": "1day"}
 TD_PAGE = 5000            # máximo de velas por petición
@@ -47,7 +47,7 @@ def klines(symbol: str, interval: str, *, limit: int = 1000,
 
     Sin `start`: las últimas `limit` velas. Con `start`: todas desde `start` hasta ahora.
     """
-    if symbol in TD_SYMBOLS:
+    if symbol in TD_SYMBOLS or "/" in symbol:
         return _twelvedata(symbol, interval, limit=limit, start=start)
     return _binance(symbol, interval, limit=limit, start=start)
 

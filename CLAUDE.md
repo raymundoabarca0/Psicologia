@@ -31,6 +31,8 @@ errores; la rentabilidad es secundaria. Ser honesto: si algo no funciona o pierd
   - Herramientas: `python -m paper_signals.analyze 1d 4h` / `1h 30m 15m`,
     `python -m paper_signals.evaluate`, `python -m paper_signals.charts` (desde `trading_bot/`).
   - Al 2026-11-05: 2 operaciones cerradas, ambas perdedoras (simulación 98,66 USD de 100).
+  - Demo del usuario al 2026-11-06: saldo 101.017,25 USD (+1.017,25). El 6-nov ganó +1.127 en
+    dos ventas de oro tomadas de planes condicionales (no señales), una de ellas duplicada.
 - Twelve Data conectado (2026-11-06): la API key la inyecta el proxy en `api.twelvedata.com`
   (no hay variable de entorno). Plan basic: 8 peticiones/min, 800/día. XAU/USD y EUR/USD
   funcionan. Pasar siempre `timezone=UTC` (por defecto devuelve otra zona horaria).

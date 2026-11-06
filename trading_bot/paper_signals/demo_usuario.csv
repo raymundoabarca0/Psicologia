@@ -1,3 +1,5 @@
 senal,activo,direccion,lotes,entrada,salida,pnl_usd,nota
-2,XAUUSD,sell,0.10,4109.57,4122.00,-124.30,"Entró tarde (señal en ~4087 de su broker) y con lote menor al 1%; stop sin ajustar por la diferencia de precio"
-3,XAUUSD,buy,0.71,~4120.8,~4121.3,~0,"Subió el stop a la entrada al llegar a +1R (regla de protección); cerró en cero. Sin la regla: unos -1000 USD"
+2,XAUUSD,sell,0.10,4109.57,4122.00,-124.30,"Entrada 2026.11.05 03:26, stop 03:37 (hora del servidor). Entró tarde (señal en ~4087 de su broker) y con lote menor al 1%; stop sin ajustar por la diferencia de precio"
+3,XAUUSD,buy,0.71,4120.86,4121.06,14.20,"Entrada 2026.11.05 07:30, salida 14:33 (hora del servidor). Subió el stop a la entrada al llegar a +1R (regla de protección); cerró en +14,20. Sin la regla: unos -1000 USD"
+plan 06-nov (venta 1),XAUUSD,sell,0.71,4076.98,4057.66 (0.35) / 4072.83 (0.36),825.60,"Plan condicional (no señal). Entrada 2026.11.06 11:28, fuera de horario y antes del empleo; stop 4085.53 (riesgo ~607 USD). Cerró 0.35 a mano a las 19:45 (+676.20) y el resto tocó el stop protegido 4072.71 a las 20:45 (+149.40). ~+1.36R"
+"plan 06-nov (venta 2, duplicada)",XAUUSD,sell,0.71,4060.15,4055.90,301.75,"Duplicaba la venta 1 (misma apuesta; 2% de riesgo total). Entrada 2026.11.06 19:12, cerrada a mano a las 19:44 (+301.75) antes de que el oro subiera a 4078."

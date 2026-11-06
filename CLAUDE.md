@@ -34,9 +34,14 @@ errores; la rentabilidad es secundaria. Ser honesto: si algo no funciona o pierd
 - Twelve Data conectado (2026-11-06): la API key la inyecta el proxy en `api.twelvedata.com`
   (no hay variable de entorno). Plan basic: 8 peticiones/min, 800/día. XAU/USD y EUR/USD
   funcionan. Pasar siempre `timezone=UTC` (por defecto devuelve otra zona horaria).
-  Al conectar: XAU/USD ≈ PAXG + 1,3; EUR/USD ≈ EURUSDT − 11 pips. Falta integrarlo al código.
+  Al conectar: XAU/USD ≈ PAXG + 1,3 (varía de +1 a +11); EUR/USD ≈ EURUSDT − 11 pips.
+  Integrado en `paper_signals/market.py`: ORO = XAU/USD y EUR = EUR/USD (Twelve Data), BTC sigue
+  en Binance. Las señales viejas (PAXGUSDT, EURUSDT) se evalúan con Binance. Velas 4h y D1 de
+  Twelve Data se arman desde 1h alineadas a la hora del servidor (UTC+2); se quitan las velas
+  planas del fin de semana. La diferencia con el broker del usuario hay que recalcularla contra
+  XAU/USD y EUR/USD (pedirle su precio actual).
 - Datos: espejo público de Binance `data-api.binance.vision` (api.binance.com bloquea los
-  servidores de EE. UU.). Oro = PAXGUSDT, euro = EURUSDT, BTC = BTCUSDT.
+  servidores de EE. UU.). Hasta el 2026-11-05: oro = PAXGUSDT, euro = EURUSDT; BTC = BTCUSDT.
 
 ## Reglas del experimento (acordadas con el usuario)
 
@@ -45,7 +50,8 @@ errores; la rentabilidad es secundaria. Ser honesto: si algo no funciona o pierd
   Oro: 100 onzas por lote (lotes = 1000 / (distancia al stop × 100)).
   Euro: 100.000 por lote (lotes = 1000 / (pips × 10)). BTC: tamaño de contrato por confirmar.
 - Diferencia de precios con su broker (aprox., recalcular con un precio actual):
-  XAUUSD ≈ PAXG + 9; EURUSD ≈ EURUSDT − 9 pips; BTCUSD ≈ BTCUSDT − 37.
+  XAUUSD ≈ PAXG + 9; EURUSD ≈ EURUSDT − 9 pips; BTCUSD ≈ BTCUSDT − 37 (medido contra
+  Binance; contra XAU/USD y EUR/USD de Twelve Data está por recalcular).
   Dar siempre los niveles en mis precios y en los de su broker.
 - Horas: siempre en hora del servidor de MetaTrader (UTC+2 = México + 8 h), formato
   AAAA.MM.DD HH:MM; opcionalmente la de México entre paréntesis.

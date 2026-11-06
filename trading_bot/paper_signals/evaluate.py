@@ -41,7 +41,8 @@ REPORT = HERE / "REPORTE.md"
 CAPITAL = 100.0
 RISK_PCT = 1.0
 # Spread típico en precio (XAUUSD ~0,30 USD, EURUSD ~1,2 pips, BTCUSD ~25 USD).
-SPREAD = {"PAXGUSDT": 0.30, "EURUSDT": 0.00012, "BTCUSDT": 25.0}
+SPREAD = {"PAXGUSDT": 0.30, "EURUSDT": 0.00012, "BTCUSDT": 25.0,
+          "XAU/USD": 0.30, "EUR/USD": 0.00012}
 CASH_BUFFER = 0.02
 BAR = "1m"   # granularidad de la simulación (señales de 15m necesitan velas finas)
 
@@ -133,8 +134,9 @@ def evaluate() -> pd.DataFrame:
     sigs = pd.read_csv(SIGNALS)
     if "manual_close_utc" not in sigs:
         sigs["manual_close_utc"] = pd.NA
-    start = pd.Timestamp(sigs.created_utc.min()).floor("h")
-    bars = {s: klines(s, BAR, start=start) for s in sigs.symbol.unique()}
+    # Velas desde la primera señal de cada símbolo (Twelve Data limita las peticiones).
+    starts = sigs.groupby("symbol").created_utc.min()
+    bars = {s: klines(s, BAR, start=pd.Timestamp(t).floor("h")) for s, t in starts.items()}
     paths = {r.id: _simulate(r, bars[r.symbol]) for r in sigs.itertuples(index=False)
              for r in [pd.Series(r._asdict())]}
 

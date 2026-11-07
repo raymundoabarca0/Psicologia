@@ -337,5 +337,122 @@
   ],
   "why": "D1 cerró bajo la EMA200 (76.830); 4h y 1h bajistas. Lateral 75.300-76.300 desde la noche. Salidas de ETF de 430 M el 5-nov; Fear & Greed 28. Sobre el soporte 75.208.",
   "expect": "Venta solo si rebota a 76.850 y lo rechazan en 15m (stop 77.850, objetivo 74.500). Valor esperado ~0: no prioritaria."
+ },
+ {
+  "created_utc": "2026-11-07T12:15:00+00:00",
+  "asset": "BTC",
+  "symbol": "BTCUSDT",
+  "levels": [
+   {
+    "price": 76800,
+    "label": "Zona venta"
+   },
+   {
+    "price": 77800,
+    "label": "Invalida"
+   },
+   {
+    "price": 74888,
+    "label": "Soporte"
+   },
+   {
+    "price": 73000,
+    "label": "Soporte clave"
+   }
+  ],
+  "path": [
+   [
+    0,
+    75985
+   ],
+   [
+    1,
+    76700
+   ],
+   [
+    3,
+    75400
+   ],
+   [
+    6,
+    74700
+   ]
+  ],
+  "why": "D1 cerró 2 días bajo la EMA200 (76.823); 4h bajista. Fin de semana sin volumen: rango 75.400-76.250 (ADX 30m 10). El viernes marcó 74.888. Mineros vendiendo BTC; analistas ven 73.000 como soporte clave. Valor esperado de una venta ahora: ~0.",
+  "expect": "Venta solo si rebota a 76.800 (EMA200 diaria + EMA20 de 4h) y lo rechazan en 15m: stop 77.800, objetivo 74.800 (R:R 2). Si cae primero bajo 74.888 sin rebote, no perseguir."
+ },
+ {
+  "created_utc": "2026-11-07T12:15:00+00:00",
+  "asset": "ORO",
+  "symbol": "XAU/USD",
+  "levels": [
+   {
+    "price": 4082,
+    "label": "Zona venta"
+   },
+   {
+    "price": 4096,
+    "label": "Invalida"
+   },
+   {
+    "price": 4030,
+    "label": "Objetivo"
+   },
+   {
+    "price": 4144,
+    "label": "EMA50 diaria"
+   }
+  ],
+  "path": [
+   [
+    0,
+    4069
+   ],
+   [
+    2,
+    4080
+   ],
+   [
+    5,
+    4050
+   ],
+   [
+    8,
+    4032
+   ]
+  ],
+  "why": "Cerró el viernes en 4.068,7. D1 bajista (bajo EMA50 4.144); 4h mixto. El viernes rechazaron 4.078. Mercado cerrado hasta el domingo ~00:00 del servidor: riesgo de gap en la apertura.",
+  "expect": "Lunes después de las 15:00 del servidor: venta solo si rechaza 4.078-4.085 en 15m (stop 4.096, objetivo 4.030). No operar la apertura del domingo."
+ },
+ {
+  "created_utc": "2026-11-07T12:15:00+00:00",
+  "asset": "EUR",
+  "symbol": "EUR/USD",
+  "levels": [
+   {
+    "price": 1.12,
+    "label": "Resistencia"
+   },
+   {
+    "price": 1.1107,
+    "label": "Piso rango"
+   }
+  ],
+  "path": [
+   [
+    0,
+    1.114
+   ],
+   [
+    3,
+    1.1165
+   ],
+   [
+    8,
+    1.112
+   ]
+  ],
+  "why": "Cerró en 1,1140, cerca del piso del rango de un mes (1,1107-1,1132). D1 y 4h bajistas pero sobre soporte: vender aquí es vender sobre soporte. Vender euro duplica vender oro.",
+  "expect": "Sin operación. Venta solo con cierre de 4h bajo 1,1100 o rechazo en 1,1200."
  }
 ]

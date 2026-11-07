@@ -154,7 +154,7 @@ def chart_signals() -> list[Path]:
     outs = []
     for s in sigs.itertuples():
         created = pd.Timestamp(s.created_utc)
-        ref_bars = klines(s.symbol, "1h", limit=1, start=created.floor("h") - pd.Timedelta(hours=1))
+        ref_bars = klines(s.symbol, "1h", limit=1000, start=created.floor("h") - pd.Timedelta(hours=1))
         ref = float(ref_bars.close.iloc[0])
         e = ev.loc[s.id]
         detail = ""

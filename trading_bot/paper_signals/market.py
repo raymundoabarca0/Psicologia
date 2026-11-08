@@ -153,7 +153,9 @@ def _twelvedata(symbol: str, interval: str, *, limit: int,
     base = {"symbol": symbol, "interval": TD_INTERVAL[interval]}
     rows: list[dict] = []
     if start is None:
-        rows = _td_get({**base, "outputsize": min(limit + 1, TD_PAGE)})
+        # Pedimos velas de más para cubrir un fin de semana (se quitan después).
+        weekend = int(pd.Timedelta(hours=50) / _bar_delta(interval)) + 1
+        rows = _td_get({**base, "outputsize": min(limit + 1 + weekend, TD_PAGE)})
     else:
         cursor = pd.Timestamp(start).tz_convert("UTC") if pd.Timestamp(start).tzinfo \
             else pd.Timestamp(start, tz="UTC")

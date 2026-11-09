@@ -649,5 +649,146 @@
   ],
   "why": "Rebotó del piso (1,1132) a 1,1187 con el dólar débil del lunes; ahora en las EMA de 4h (1,1190-1,1194) y bajo la resistencia 1,1200. D1 bajista. Vender euro y vender oro serían la misma apuesta.",
   "expect": "Sin operación. Prioridad al plan de oro."
+ },
+ {
+  "created_utc": "2026-11-09T23:25:00+00:00",
+  "asset": "ORO",
+  "symbol": "XAU/USD",
+  "levels": [
+   {
+    "price": 4160,
+    "label": "Stop"
+   },
+   {
+    "price": 4140,
+    "label": "Venta"
+   },
+   {
+    "price": 4120,
+    "label": "+1R mitad"
+   },
+   {
+    "price": 4080,
+    "label": "Objetivo"
+   }
+  ],
+  "path": [
+   [
+    0,
+    4145
+   ],
+   [
+    3.4,
+    4147
+   ],
+   [
+    4.3,
+    4140
+   ],
+   [
+    5.2,
+    4120
+   ],
+   [
+    8.6,
+    4080
+   ]
+  ],
+  "why": "Escenario A (venta, ~50%): el oro llegó a la resistencia del diario (EMA50 4.144, máximo 4.147,6) y la tocó fuera de horario. Si entre 15:00 y 18:30 del 10-nov la rechazan en 15m (mecha arriba y cierre bajo 4.140), vender 4.140.",
+  "expect": "Checar: 10-nov 15:00-18:30 rechazo y entrada 4.140 · ~22:00 del 10-nov en 4.120 (+1R, cerrar la mitad) · ~12:00 del 11-nov en 4.080. Sin rechazo a las 18:30: cancelado. Horas del servidor."
+ },
+ {
+  "created_utc": "2026-11-09T23:26:00+00:00",
+  "asset": "ORO",
+  "symbol": "XAU/USD",
+  "levels": [
+   {
+    "price": 4198,
+    "label": "Objetivo"
+   },
+   {
+    "price": 4170,
+    "label": "+1R mitad"
+   },
+   {
+    "price": 4150,
+    "label": "Compra"
+   },
+   {
+    "price": 4130,
+    "label": "Stop"
+   }
+  ],
+  "path": [
+   [
+    0,
+    4145
+   ],
+   [
+    3,
+    4166
+   ],
+   [
+    4.3,
+    4150
+   ],
+   [
+    6,
+    4172
+   ],
+   [
+    9,
+    4198
+   ]
+  ],
+  "why": "Escenario B (compra, ~50%): si una vela de 4h cierra sobre 4.160 (las velas de 4h cierran a las 04, 08, 12, 16, 20 y 24 h del servidor), la resistencia del diario se rompió. Solo entonces: comprar si regresa a 4.148-4.152 y aguanta en 15m.",
+  "expect": "Checar: cierre de 4h sobre 4.160 · retesteo 4.150 entre 15:00 y 18:30 del 10-nov · 4.170 (+1R) ~el mismo día · 4.198 ~mediodía del 11-nov. A y B no pueden pasar a la vez: solo uno."
+ },
+ {
+  "created_utc": "2026-11-09T23:25:00+00:00",
+  "asset": "BTC",
+  "symbol": "BTCUSDT",
+  "levels": [
+   {
+    "price": 76250,
+    "label": "Stop"
+   },
+   {
+    "price": 75500,
+    "label": "Venta"
+   },
+   {
+    "price": 74750,
+    "label": "+1R mitad"
+   },
+   {
+    "price": 74000,
+    "label": "Objetivo"
+   }
+  ],
+  "path": [
+   [
+    0,
+    75150
+   ],
+   [
+    3.4,
+    75450
+   ],
+   [
+    4.3,
+    75400
+   ],
+   [
+    5.2,
+    74750
+   ],
+   [
+    8.6,
+    74000
+   ]
+  ],
+  "why": "D1 y 4h bajistas (bajo EMA200 diaria 76.836). Resistencia 75.400-75.600 (piso roto del rango; tocó 75.568 a las 17:00 del 9-nov sin romper). Valor esperado ~0: plan secundario.",
+  "expect": "Checar: 10-nov 15:00-18:30 rebote a 75.400-75.600 y rechazo en 15m, venta 75.500 (tu broker 75.463) · ~22:00 del 10-nov en 74.750 (+1R) · ~12:00 del 11-nov en 74.000. Cierre de 4h sobre 76.250: cancelado."
  }
 ]

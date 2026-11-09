@@ -536,5 +536,118 @@
   ],
   "why": "Sin cambios: cerrado desde el viernes (4.068,7). Abre hoy a las ~00:00 del servidor. D1 bajista bajo EMA50 4.144.",
   "expect": "Lunes después de las 15:00 del servidor: venta si rechaza 4.078-4.085 (stop 4.096, objetivo 4.030). Si abre con gap fuera de la zona, el plan se revisa."
+ },
+ {
+  "created_utc": "2026-11-09T12:20:00+00:00",
+  "asset": "BTC",
+  "symbol": "BTCUSDT",
+  "levels": [
+   {
+    "price": 75600,
+    "label": "Resistencia"
+   },
+   {
+    "price": 74800,
+    "label": "EMA20 1h"
+   },
+   {
+    "price": 73510,
+    "label": "Mínimo 08-nov"
+   },
+   {
+    "price": 73000,
+    "label": "Soporte clave"
+   }
+  ],
+  "path": [
+   [
+    0,
+    74530
+   ],
+   [
+    1,
+    74950
+   ],
+   [
+    3,
+    74000
+   ],
+   [
+    6,
+    73600
+   ]
+  ],
+  "why": "Rompió el rango 75.571-76.250 el domingo y cayó a 73.510; el retesteo de 75.600 fue a las 04:00 del servidor (fuera de horario) y lo rechazaron. D1 bajo EMA200 (76.836); 4h bajista. Noticias: presión en Nvidia/IA; analistas ven 74.000 como soporte y 69.000 si se rompe.",
+  "expect": "Sin operación: el precio está a mitad de camino entre la resistencia 75.600 y el soporte 73.000-73.510. Venta solo con rechazo en 75.400-75.600 (stop 76.250). No vender cerca de 73.500."
+ },
+ {
+  "created_utc": "2026-11-09T12:20:00+00:00",
+  "asset": "ORO",
+  "symbol": "XAU/USD",
+  "levels": [
+   {
+    "price": 4142,
+    "label": "Zona venta"
+   },
+   {
+    "price": 4158,
+    "label": "Invalida"
+   },
+   {
+    "price": 4094,
+    "label": "Objetivo"
+   }
+  ],
+  "path": [
+   [
+    0,
+    4109
+   ],
+   [
+    1,
+    4138
+   ],
+   [
+    3,
+    4110
+   ],
+   [
+    5,
+    4094
+   ]
+  ],
+  "why": "Abrió la semana con +50 (4.055 a 4.105) y llegó a 4.133,7, sin tocar la zona 4.140-4.147 (EMA50 diaria 4.144 y máximo del 5-nov 4.147,6). D1 bajista; 4h alcista (sobre EMA20/50) pero bajo su EMA200 (4.117). Comprar aquí es comprar debajo de resistencia del diario.",
+  "expect": "Venta solo si llega a 4.140-4.147 y lo rechazan en 15m entre 15:00 y 18:30 del servidor: stop 4.158, +1R 4.126, objetivo 4.094. Se anula con cierre de 4h sobre 4.158."
+ },
+ {
+  "created_utc": "2026-11-09T12:20:00+00:00",
+  "asset": "EUR",
+  "symbol": "EUR/USD",
+  "levels": [
+   {
+    "price": 1.12,
+    "label": "Resistencia"
+   },
+   {
+    "price": 1.1132,
+    "label": "Soporte"
+   }
+  ],
+  "path": [
+   [
+    0,
+    1.1187
+   ],
+   [
+    2,
+    1.1198
+   ],
+   [
+    5,
+    1.117
+   ]
+  ],
+  "why": "Rebotó del piso (1,1132) a 1,1187 con el dólar débil del lunes; ahora en las EMA de 4h (1,1190-1,1194) y bajo la resistencia 1,1200. D1 bajista. Vender euro y vender oro serían la misma apuesta.",
+  "expect": "Sin operación. Prioridad al plan de oro."
  }
 ]

@@ -28,7 +28,8 @@ errores; la rentabilidad es secundaria. Ser honesto: si algo no funciona o pierd
     `manual_close_utc` con la hora ACTUAL; leer esa columna con dtype string).
   - Vigilancia sin señal: `trading_bot/paper_signals/watch.json`.
   - Resultados de la demo del usuario: `trading_bot/paper_signals/demo_usuario.csv`.
-  - Herramientas: `python -m paper_signals.analyze 1d 4h` / `1h 30m 15m`,
+  - Herramientas (analyze incluye TREND METER -100..+100, medidor de VOLATILIDAD
+    —percentil del ATR14 en 200 velas— y un TABLERO final con ambos, desde el 2026-11-10): `python -m paper_signals.analyze 1d 4h` / `1h 30m 15m`,
     `python -m paper_signals.evaluate`, `python -m paper_signals.charts` (desde `trading_bot/`).
   - Al 2026-11-05: 2 operaciones cerradas, ambas perdedoras (simulación 98,66 USD de 100).
   - Demo del usuario al 2026-11-06: saldo 101.017,25 USD (+1.017,25). El 6-nov ganó +1.127 en

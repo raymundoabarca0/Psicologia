@@ -790,5 +790,126 @@
   ],
   "why": "D1 y 4h bajistas (bajo EMA200 diaria 76.836). Resistencia 75.400-75.600 (piso roto del rango; tocó 75.568 a las 17:00 del 9-nov sin romper). Valor esperado ~0: plan secundario.",
   "expect": "Checar: 10-nov 15:00-18:30 rebote a 75.400-75.600 y rechazo en 15m, venta 75.500 (tu broker 75.463) · ~22:00 del 10-nov en 74.750 (+1R) · ~12:00 del 11-nov en 74.000. Cierre de 4h sobre 76.250: cancelado."
+ },
+ {
+  "created_utc": "2026-11-10T12:20:00+00:00",
+  "asset": "ORO",
+  "symbol": "XAU/USD",
+  "levels": [
+   {
+    "price": 4115,
+    "label": "Stop"
+   },
+   {
+    "price": 4100,
+    "label": "Venta"
+   },
+   {
+    "price": 4085,
+    "label": "+1R mitad"
+   },
+   {
+    "price": 4058,
+    "label": "Objetivo"
+   }
+  ],
+  "path": [
+   [
+    0,
+    4078
+   ],
+   [
+    1,
+    4098
+   ],
+   [
+    1.6,
+    4100
+   ],
+   [
+    2.5,
+    4085
+   ],
+   [
+    4,
+    4060
+   ]
+  ],
+  "why": "Rechazado en la EMA50 diaria (4.144-4.149) y cayó a 4.069: rompió a la baja el rango de 20 velas en 1h. D1 bajista (trend -38); 15m y 30m bajistas fuertes (-75). Pero está sobre soportes (EMA20 diaria 4.067, EMA50 4h 4.058): vender aquí es vender encima de soporte. Probable IPC de EE. UU. hoy a las 15:30.",
+  "expect": "Después de las 16:00: venta solo si rebota a 4.095-4.105 y lo rechazan en 15m (stop 4.115, +1R 4.085, objetivo 4.058). Lote reducido 0,33 por volatilidad extrema del 4h. Sin IPC confirmado, igual esperar 16:00."
+ },
+ {
+  "created_utc": "2026-11-10T12:20:00+00:00",
+  "asset": "BTC",
+  "symbol": "BTCUSDT",
+  "levels": [
+   {
+    "price": 75650,
+    "label": "Stop"
+   },
+   {
+    "price": 75000,
+    "label": "Venta"
+   },
+   {
+    "price": 74350,
+    "label": "+1R mitad"
+   },
+   {
+    "price": 73700,
+    "label": "Objetivo"
+   }
+  ],
+  "path": [
+   [
+    0,
+    74366
+   ],
+   [
+    1.2,
+    74950
+   ],
+   [
+    2,
+    74700
+   ],
+   [
+    4,
+    73800
+   ]
+  ],
+  "why": "Bajista en todas las temporalidades (D1 y 4h -75). Glassnode: vendedores dominan, ETF -1.282 M en la semana. Soporte 73.000-73.510 cerca: vender abajo es perseguir. IPC hoy: puede moverlo fuerte.",
+  "expect": "Venta solo si rebota a 74.900-75.050 (EMA20/50 de 1h) y lo rechazan en 15m después de las 16:00: stop 75.650, objetivo 73.700. Valor esperado ~0: secundaria."
+ },
+ {
+  "created_utc": "2026-11-10T12:20:00+00:00",
+  "asset": "EUR",
+  "symbol": "EUR/USD",
+  "levels": [
+   {
+    "price": 1.1257,
+    "label": "Techo compresión"
+   },
+   {
+    "price": 1.1215,
+    "label": "Piso compresión"
+   }
+  ],
+  "path": [
+   [
+    0,
+    1.1218
+   ],
+   [
+    1.5,
+    1.124
+   ],
+   [
+    3,
+    1.122
+   ]
+  ],
+  "why": "Comprimido entre 1,1215 y 1,1257 (volatilidad 1h percentil 18). D1 bajista vs 4h alcista sin fuerza. El IPC decidirá la ruptura.",
+  "expect": "Sin operación. Prioridad al oro."
  }
 ]

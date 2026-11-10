@@ -76,7 +76,10 @@ def _level(ax, y, label, color, x_end, style="-") -> None:
 def render(*, asset: str, symbol: str, title: str, created: pd.Timestamp, tf: str = "4h",
            levels: list[tuple[float, str, str, str]], path: list[tuple[pd.Timestamp, float]],
            why: str, expect: str, status: str, detail: str, out: Path) -> Path:
-    bars = klines(symbol, tf, limit=500)
+    # Desde 600 velas antes de la señal (EMA200 + 60 velas de contexto) hasta ahora, aunque la
+    # señal sea vieja y la temporalidad corta.
+    step = pd.Timedelta(tf.replace("m", "min").replace("1d", "1D"))
+    bars = klines(symbol, tf, limit=1000, start=created - step * 600)
     ema200 = ind.ema(bars["close"], 200)
     before = bars[bars.index < created].iloc[-60:]
     after = bars[bars.index >= created.floor(tf.replace("m", "min"))]

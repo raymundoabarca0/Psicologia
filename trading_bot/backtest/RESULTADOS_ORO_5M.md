@@ -29,3 +29,19 @@ resultado puede ser suerte). Es una candidata, no una estrategia probada. Se pru
 7. Lote = 250 / (distancia del stop × 100).
 8. Días de dato fuerte de EE. UU. a las 15:30 (empleo, IPC, Fed): no se opera ese día
    (el backtest no los quitó; es una protección extra).
+
+## Regla del usuario (2026-11-10): EMA20 vs EMA50 en 5m y 15m + ruptura del rango reciente
+Dirección: EMA20 bajo EMA50 en 5m y en 15m = solo ventas (y al revés). Entrada: vela de 5m que
+cierra fuera del rango de las últimas 6 o 12 velas. Objetivo 2R. Script:
+`backtest/oro_5m_regla_usuario.py`.
+
+| Rango | Horario (servidor) | Stop | Operaciones | Total | 1ª mitad | 2ª mitad |
+|---|---|---|---|---|---|---|
+| 30 min | 09:00-18:30 | medio rango | 313 | −6,1R | +11,8R | −17,9R |
+| 30 min | 09:00-18:30 | rango completo | 205 | +0,9R | +13,7R | −12,8R |
+| 60 min | 09:00-18:30 | medio rango | 212 | +14,9R | +34,3R | −19,4R |
+| 60 min | 09:00-18:30 | rango completo | 133 | +12,3R | +18,2R | −6,0R |
+| 30/60 min | 15:00-18:30 | ambos | 64-111 | −5,9R a −10,7R | | |
+
+Conclusión: ganó en la primera mitad (agosto-septiembre) y perdió en la segunda (octubre-noviembre)
+en todas las variantes: no es estable. Da ~2-3 operaciones por día (riesgo de sobreoperar).

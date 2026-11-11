@@ -37,6 +37,8 @@ errores; la rentabilidad es secundaria. Ser honesto: si algo no funciona o pierd
     ruptura de rango de 20 velas) y un TABLERO final, desde el 2026-11-10): `python -m paper_signals.analyze 1d 4h` / `1h 30m 15m`,
     `python -m paper_signals.evaluate`, `python -m paper_signals.charts` (desde `trading_bot/`).
   - Al 2026-11-05: 2 operaciones cerradas, ambas perdedoras (simulación 98,66 USD de 100).
+  - TERMINADO el 2026-11-11: reporte final en `trading_bot/paper_signals/REPORTE_FINAL.md`
+    (simulación −1,34%; demo +1,02%). Pendiente: el usuario decide si sigue el análisis diario.
   - Demo del usuario al 2026-11-06: saldo 101.017,25 USD (+1.017,25). El 6-nov ganó +1.127 en
     dos ventas de oro tomadas de planes condicionales (no señales), una de ellas duplicada.
 - Twelve Data conectado (2026-11-06): la API key la inyecta el proxy en `api.twelvedata.com`

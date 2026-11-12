@@ -1,0 +1,915 @@
+[
+ {
+  "created_utc": "2026-11-04T22:40:00+00:00",
+  "asset": "EUR",
+  "symbol": "EURUSDT",
+  "levels": [
+   {
+    "price": 1.13,
+    "label": "Techo rango"
+   },
+   {
+    "price": 1.11,
+    "label": "Piso rango"
+   }
+  ],
+  "path": [
+   [
+    0,
+    1.1238
+   ],
+   [
+    4,
+    1.129
+   ],
+   [
+    10,
+    1.119
+   ],
+   [
+    16,
+    1.124
+   ]
+  ],
+  "why": "Diario bajista (bajo EMA20/50/200, ADX 30), pero en 4h el precio está en un rango sin dirección (ADX 19) entre 1,1100 y 1,1300, justo en las EMAs. Además, vender euro sería apostar otra vez a un dólar fuerte, igual que la venta de oro: duplicaría el riesgo.",
+  "expect": "Que siga lateral entre 1,1100 y 1,1300. Buscaré venta si sube a 1,1300 y es rechazado, o si rompe y cierra por debajo de 1,1100. Mientras siga en medio del rango no hay operación."
+ },
+ {
+  "created_utc": "2026-11-05T00:15:00+00:00",
+  "asset": "EUR",
+  "symbol": "EURUSDT",
+  "levels": [
+   {
+    "price": 1.13,
+    "label": "Techo rango"
+   },
+   {
+    "price": 1.11,
+    "label": "Piso rango"
+   }
+  ],
+  "path": [
+   [
+    0,
+    1.1243
+   ],
+   [
+    4,
+    1.129
+   ],
+   [
+    10,
+    1.119
+   ],
+   [
+    16,
+    1.124
+   ]
+  ],
+  "why": "Sin cambios: el diario sigue bajista (bajo EMA50/200, ADX 31) y el 4h sigue en rango sin dirección (ADX 18) a mitad de camino entre 1,1100 y 1,1300. Mantengo fuera el euro para no duplicar la apuesta a dólar fuerte del oro.",
+  "expect": "Lateral entre 1,1100 y 1,1300. Venta solo con rechazo en 1,1300 o con cierre de 4h bajo 1,1100."
+ },
+ {
+  "created_utc": "2026-11-05T12:15:00+00:00",
+  "asset": "EUR",
+  "symbol": "EURUSDT",
+  "levels": [
+   {
+    "price": 1.13,
+    "label": "Techo rango"
+   },
+   {
+    "price": 1.11,
+    "label": "Piso rango"
+   }
+  ],
+  "path": [
+   [
+    0,
+    1.123
+   ],
+   [
+    2,
+    1.125
+   ],
+   [
+    6,
+    1.119
+   ],
+   [
+    10,
+    1.123
+   ]
+  ],
+  "why": "4h bajista pero sin tendencia (ADX 16) y aún dentro del rango 1,1100-1,1300. En 15m cayó fuerte de 1,1278 a 1,1226 y está sobrevendido (RSI 25): vender ahora sería perseguir el precio, y a mitad del rango no hay ventaja.",
+  "expect": "Rebote corto hacia 1,1250 y luego seguir lateral-bajista dentro del rango. Venta solo con rechazo en 1,1300 o cierre de 4h bajo 1,1100; compra no, mientras el diario siga bajista."
+ },
+ {
+  "created_utc": "2026-11-05T21:15:00+00:00",
+  "asset": "BTC",
+  "symbol": "BTCUSDT",
+  "levels": [
+   {
+    "price": 77000,
+    "label": "Zona venta"
+   },
+   {
+    "price": 75570,
+    "label": "Soporte"
+   },
+   {
+    "price": 78000,
+    "label": "Invalida"
+   }
+  ],
+  "path": [
+   [
+    0,
+    76000
+   ],
+   [
+    2,
+    76900
+   ],
+   [
+    6,
+    75200
+   ],
+   [
+    10,
+    74800
+   ]
+  ],
+  "why": "Cayó de 80,5k a 75,6k (-6%) y perforó la EMA200 diaria (76,8k): giro bajista. Pero está sobrevendido en 1h (RSI 27) y justo sobre el soporte 75,57-75,74k. Vender aquí = vender sobre soporte (lección del 05-nov). Valor esperado de una venta ahora: casi cero.",
+  "expect": "Rebote técnico hacia 76,8-77,0k (EMA200 diaria perdida) y nueva caída. Plan: venta solo si rechaza 76,8-77,0k en 15m; si cierra 4h sobre 78,0k, la idea bajista se anula."
+ },
+ {
+  "created_utc": "2026-11-05T21:15:00+00:00",
+  "asset": "ORO",
+  "symbol": "PAXGUSDT",
+  "levels": [
+   {
+    "price": 4103,
+    "label": "Zona venta"
+   },
+   {
+    "price": 4125,
+    "label": "EMA50 diaria"
+   },
+   {
+    "price": 4062,
+    "label": "Soporte"
+   }
+  ],
+  "path": [
+   [
+    0,
+    4083
+   ],
+   [
+    2,
+    4100
+   ],
+   [
+    6,
+    4065
+   ],
+   [
+    10,
+    4050
+   ]
+  ],
+  "why": "La EMA50 diaria (4.125) frenó la subida: máximos de 1h cada vez más bajos (4.137, 4.131, 4.127, 4.118). Precio entre la zona 4.100-4.105 (EMAs de 15m) y el soporte 4.062. A mitad de camino no hay ventaja clara.",
+  "expect": "Más presión bajista mientras siga bajo 4.125. Plan: venta si rebota a 4.100-4.105 y es rechazado (stop sobre 4.120); compra solo con cierre de 4h sobre 4.125."
+ },
+ {
+  "created_utc": "2026-11-05T21:15:00+00:00",
+  "asset": "EUR",
+  "symbol": "EURUSDT",
+  "levels": [
+   {
+    "price": 1.13,
+    "label": "Techo rango"
+   },
+   {
+    "price": 1.11,
+    "label": "Piso rango"
+   }
+  ],
+  "path": [
+   [
+    0,
+    1.1229
+   ],
+   [
+    4,
+    1.125
+   ],
+   [
+    10,
+    1.12
+   ],
+   [
+    16,
+    1.123
+   ]
+  ],
+  "why": "Sin cambios: lateral (ADX 4h 14) a mitad del rango 1,1100-1,1300.",
+  "expect": "Lateral. Venta solo con rechazo en 1,1300 o cierre de 4h bajo 1,1100."
+ },
+ {
+  "created_utc": "2026-11-06T12:20:00+00:00",
+  "asset": "ORO",
+  "symbol": "XAU/USD",
+  "levels": [
+   {
+    "price": 4067,
+    "label": "Zona venta"
+   },
+   {
+    "price": 4085,
+    "label": "Invalida"
+   },
+   {
+    "price": 4037,
+    "label": "Soporte"
+   },
+   {
+    "price": 4013,
+    "label": "Objetivo"
+   }
+  ],
+  "path": [
+   [
+    0,
+    4062
+   ],
+   [
+    1,
+    4068
+   ],
+   [
+    3,
+    4040
+   ],
+   [
+    6,
+    4015
+   ]
+  ],
+  "why": "D1 bajista (bajo EMA50 4.147 y EMA200 4.274). Cayó a 4.037 en la noche, rebotó a 4.081 y ahora está en 4.062, justo en la zona de venta. Pero falta 1 h para el reporte de empleo (15:30 del servidor): entrar ahora es apostar al dato.",
+  "expect": "Después del dato: venta solo si rechaza 4.065-4.070 en 15m (stop 4.085, objetivo 4.013). Se anula con cierre de 4h sobre 4.085."
+ },
+ {
+  "created_utc": "2026-11-06T12:20:00+00:00",
+  "asset": "EUR",
+  "symbol": "EUR/USD",
+  "levels": [
+   {
+    "price": 1.12,
+    "label": "Zona venta"
+   },
+   {
+    "price": 1.1169,
+    "label": "Soporte"
+   },
+   {
+    "price": 1.1107,
+    "label": "Piso rango"
+   }
+  ],
+  "path": [
+   [
+    0,
+    1.1175
+   ],
+   [
+    1,
+    1.1195
+   ],
+   [
+    4,
+    1.116
+   ],
+   [
+    8,
+    1.113
+   ]
+  ],
+  "why": "D1 y 4h bajistas (dólar fuerte), pero en 1,1172 está sobre el soporte 1,1169-1,1175 y sobrevendido en 1h (RSI 28). Vender aquí es vender sobre soporte. Además, vender euro duplica la venta de oro (misma apuesta al dólar).",
+  "expect": "Sin operación. Si no se toma el oro: venta solo con rechazo en 1,1200 después del dato o cierre de 4h bajo 1,1165."
+ },
+ {
+  "created_utc": "2026-11-06T12:20:00+00:00",
+  "asset": "BTC",
+  "symbol": "BTCUSDT",
+  "levels": [
+   {
+    "price": 76850,
+    "label": "Zona venta"
+   },
+   {
+    "price": 77850,
+    "label": "Invalida"
+   },
+   {
+    "price": 75208,
+    "label": "Soporte"
+   }
+  ],
+  "path": [
+   [
+    0,
+    76140
+   ],
+   [
+    1,
+    76700
+   ],
+   [
+    3,
+    75500
+   ],
+   [
+    6,
+    74800
+   ]
+  ],
+  "why": "D1 cerró bajo la EMA200 (76.830); 4h y 1h bajistas. Lateral 75.300-76.300 desde la noche. Salidas de ETF de 430 M el 5-nov; Fear & Greed 28. Sobre el soporte 75.208.",
+  "expect": "Venta solo si rebota a 76.850 y lo rechazan en 15m (stop 77.850, objetivo 74.500). Valor esperado ~0: no prioritaria."
+ },
+ {
+  "created_utc": "2026-11-07T12:15:00+00:00",
+  "asset": "BTC",
+  "symbol": "BTCUSDT",
+  "levels": [
+   {
+    "price": 76800,
+    "label": "Zona venta"
+   },
+   {
+    "price": 77800,
+    "label": "Invalida"
+   },
+   {
+    "price": 74888,
+    "label": "Soporte"
+   },
+   {
+    "price": 73000,
+    "label": "Soporte clave"
+   }
+  ],
+  "path": [
+   [
+    0,
+    75985
+   ],
+   [
+    1,
+    76700
+   ],
+   [
+    3,
+    75400
+   ],
+   [
+    6,
+    74700
+   ]
+  ],
+  "why": "D1 cerró 2 días bajo la EMA200 (76.823); 4h bajista. Fin de semana sin volumen: rango 75.400-76.250 (ADX 30m 10). El viernes marcó 74.888. Mineros vendiendo BTC; analistas ven 73.000 como soporte clave. Valor esperado de una venta ahora: ~0.",
+  "expect": "Venta solo si rebota a 76.800 (EMA200 diaria + EMA20 de 4h) y lo rechazan en 15m: stop 77.800, objetivo 74.800 (R:R 2). Si cae primero bajo 74.888 sin rebote, no perseguir."
+ },
+ {
+  "created_utc": "2026-11-07T12:15:00+00:00",
+  "asset": "ORO",
+  "symbol": "XAU/USD",
+  "levels": [
+   {
+    "price": 4082,
+    "label": "Zona venta"
+   },
+   {
+    "price": 4096,
+    "label": "Invalida"
+   },
+   {
+    "price": 4030,
+    "label": "Objetivo"
+   },
+   {
+    "price": 4144,
+    "label": "EMA50 diaria"
+   }
+  ],
+  "path": [
+   [
+    0,
+    4069
+   ],
+   [
+    2,
+    4080
+   ],
+   [
+    5,
+    4050
+   ],
+   [
+    8,
+    4032
+   ]
+  ],
+  "why": "Cerró el viernes en 4.068,7. D1 bajista (bajo EMA50 4.144); 4h mixto. El viernes rechazaron 4.078. Mercado cerrado hasta el domingo ~00:00 del servidor: riesgo de gap en la apertura.",
+  "expect": "Lunes después de las 15:00 del servidor: venta solo si rechaza 4.078-4.085 en 15m (stop 4.096, objetivo 4.030). No operar la apertura del domingo."
+ },
+ {
+  "created_utc": "2026-11-07T12:15:00+00:00",
+  "asset": "EUR",
+  "symbol": "EUR/USD",
+  "levels": [
+   {
+    "price": 1.12,
+    "label": "Resistencia"
+   },
+   {
+    "price": 1.1107,
+    "label": "Piso rango"
+   }
+  ],
+  "path": [
+   [
+    0,
+    1.114
+   ],
+   [
+    3,
+    1.1165
+   ],
+   [
+    8,
+    1.112
+   ]
+  ],
+  "why": "Cerró en 1,1140, cerca del piso del rango de un mes (1,1107-1,1132). D1 y 4h bajistas pero sobre soporte: vender aquí es vender sobre soporte. Vender euro duplica vender oro.",
+  "expect": "Sin operación. Venta solo con cierre de 4h bajo 1,1100 o rechazo en 1,1200."
+ },
+ {
+  "created_utc": "2026-11-08T12:15:00+00:00",
+  "asset": "BTC",
+  "symbol": "BTCUSDT",
+  "levels": [
+   {
+    "price": 76800,
+    "label": "Zona venta"
+   },
+   {
+    "price": 77800,
+    "label": "Invalida"
+   },
+   {
+    "price": 75571,
+    "label": "Piso rango"
+   },
+   {
+    "price": 74888,
+    "label": "Soporte"
+   }
+  ],
+  "path": [
+   [
+    0,
+    75980
+   ],
+   [
+    2,
+    76600
+   ],
+   [
+    4,
+    75600
+   ],
+   [
+    7,
+    74900
+   ]
+  ],
+  "why": "Dos días planos: rango 75.571-76.250 (ADX 1h 18, 30m 13). D1 bajo la EMA200 (76.834) por 3 cierres; 4h bajista (bajo EMA20 76.418). Sin volumen de fin de semana: los rangos suelen romperse con la apertura de Wall Street.",
+  "expect": "Venta solo si rebota a 76.800 y lo rechazan en 15m (stop 77.800, objetivo 74.800). Si rompe el piso 75.571 con fuerza, no perseguir: esperar retesteo."
+ },
+ {
+  "created_utc": "2026-11-08T12:15:00+00:00",
+  "asset": "ORO",
+  "symbol": "XAU/USD",
+  "levels": [
+   {
+    "price": 4082,
+    "label": "Zona venta"
+   },
+   {
+    "price": 4096,
+    "label": "Invalida"
+   },
+   {
+    "price": 4030,
+    "label": "Objetivo"
+   }
+  ],
+  "path": [
+   [
+    0,
+    4069
+   ],
+   [
+    2,
+    4080
+   ],
+   [
+    5,
+    4050
+   ],
+   [
+    8,
+    4032
+   ]
+  ],
+  "why": "Sin cambios: cerrado desde el viernes (4.068,7). Abre hoy a las ~00:00 del servidor. D1 bajista bajo EMA50 4.144.",
+  "expect": "Lunes después de las 15:00 del servidor: venta si rechaza 4.078-4.085 (stop 4.096, objetivo 4.030). Si abre con gap fuera de la zona, el plan se revisa."
+ },
+ {
+  "created_utc": "2026-11-09T12:20:00+00:00",
+  "asset": "BTC",
+  "symbol": "BTCUSDT",
+  "levels": [
+   {
+    "price": 75600,
+    "label": "Resistencia"
+   },
+   {
+    "price": 74800,
+    "label": "EMA20 1h"
+   },
+   {
+    "price": 73510,
+    "label": "Mínimo 08-nov"
+   },
+   {
+    "price": 73000,
+    "label": "Soporte clave"
+   }
+  ],
+  "path": [
+   [
+    0,
+    74530
+   ],
+   [
+    1,
+    74950
+   ],
+   [
+    3,
+    74000
+   ],
+   [
+    6,
+    73600
+   ]
+  ],
+  "why": "Rompió el rango 75.571-76.250 el domingo y cayó a 73.510; el retesteo de 75.600 fue a las 04:00 del servidor (fuera de horario) y lo rechazaron. D1 bajo EMA200 (76.836); 4h bajista. Noticias: presión en Nvidia/IA; analistas ven 74.000 como soporte y 69.000 si se rompe.",
+  "expect": "Sin operación: el precio está a mitad de camino entre la resistencia 75.600 y el soporte 73.000-73.510. Venta solo con rechazo en 75.400-75.600 (stop 76.250). No vender cerca de 73.500."
+ },
+ {
+  "created_utc": "2026-11-09T12:20:00+00:00",
+  "asset": "ORO",
+  "symbol": "XAU/USD",
+  "levels": [
+   {
+    "price": 4142,
+    "label": "Zona venta"
+   },
+   {
+    "price": 4158,
+    "label": "Invalida"
+   },
+   {
+    "price": 4094,
+    "label": "Objetivo"
+   }
+  ],
+  "path": [
+   [
+    0,
+    4109
+   ],
+   [
+    1,
+    4138
+   ],
+   [
+    3,
+    4110
+   ],
+   [
+    5,
+    4094
+   ]
+  ],
+  "why": "Abrió la semana con +50 (4.055 a 4.105) y llegó a 4.133,7, sin tocar la zona 4.140-4.147 (EMA50 diaria 4.144 y máximo del 5-nov 4.147,6). D1 bajista; 4h alcista (sobre EMA20/50) pero bajo su EMA200 (4.117). Comprar aquí es comprar debajo de resistencia del diario.",
+  "expect": "Venta solo si llega a 4.140-4.147 y lo rechazan en 15m entre 15:00 y 18:30 del servidor: stop 4.158, +1R 4.126, objetivo 4.094. Se anula con cierre de 4h sobre 4.158."
+ },
+ {
+  "created_utc": "2026-11-09T12:20:00+00:00",
+  "asset": "EUR",
+  "symbol": "EUR/USD",
+  "levels": [
+   {
+    "price": 1.12,
+    "label": "Resistencia"
+   },
+   {
+    "price": 1.1132,
+    "label": "Soporte"
+   }
+  ],
+  "path": [
+   [
+    0,
+    1.1187
+   ],
+   [
+    2,
+    1.1198
+   ],
+   [
+    5,
+    1.117
+   ]
+  ],
+  "why": "Rebotó del piso (1,1132) a 1,1187 con el dólar débil del lunes; ahora en las EMA de 4h (1,1190-1,1194) y bajo la resistencia 1,1200. D1 bajista. Vender euro y vender oro serían la misma apuesta.",
+  "expect": "Sin operación. Prioridad al plan de oro."
+ },
+ {
+  "created_utc": "2026-11-09T23:25:00+00:00",
+  "asset": "ORO",
+  "symbol": "XAU/USD",
+  "levels": [
+   {
+    "price": 4160,
+    "label": "Stop"
+   },
+   {
+    "price": 4140,
+    "label": "Venta"
+   },
+   {
+    "price": 4120,
+    "label": "+1R mitad"
+   },
+   {
+    "price": 4080,
+    "label": "Objetivo"
+   }
+  ],
+  "path": [
+   [
+    0,
+    4145
+   ],
+   [
+    3.4,
+    4147
+   ],
+   [
+    4.3,
+    4140
+   ],
+   [
+    5.2,
+    4120
+   ],
+   [
+    8.6,
+    4080
+   ]
+  ],
+  "why": "Escenario A (venta, ~50%): el oro llegó a la resistencia del diario (EMA50 4.144, máximo 4.147,6) y la tocó fuera de horario. Si entre 15:00 y 18:30 del 10-nov la rechazan en 15m (mecha arriba y cierre bajo 4.140), vender 4.140.",
+  "expect": "Checar: 10-nov 15:00-18:30 rechazo y entrada 4.140 · ~22:00 del 10-nov en 4.120 (+1R, cerrar la mitad) · ~12:00 del 11-nov en 4.080. Sin rechazo a las 18:30: cancelado. Horas del servidor."
+ },
+ {
+  "created_utc": "2026-11-09T23:26:00+00:00",
+  "asset": "ORO",
+  "symbol": "XAU/USD",
+  "levels": [
+   {
+    "price": 4198,
+    "label": "Objetivo"
+   },
+   {
+    "price": 4170,
+    "label": "+1R mitad"
+   },
+   {
+    "price": 4150,
+    "label": "Compra"
+   },
+   {
+    "price": 4130,
+    "label": "Stop"
+   }
+  ],
+  "path": [
+   [
+    0,
+    4145
+   ],
+   [
+    3,
+    4166
+   ],
+   [
+    4.3,
+    4150
+   ],
+   [
+    6,
+    4172
+   ],
+   [
+    9,
+    4198
+   ]
+  ],
+  "why": "Escenario B (compra, ~50%): si una vela de 4h cierra sobre 4.160 (las velas de 4h cierran a las 04, 08, 12, 16, 20 y 24 h del servidor), la resistencia del diario se rompió. Solo entonces: comprar si regresa a 4.148-4.152 y aguanta en 15m.",
+  "expect": "Checar: cierre de 4h sobre 4.160 · retesteo 4.150 entre 15:00 y 18:30 del 10-nov · 4.170 (+1R) ~el mismo día · 4.198 ~mediodía del 11-nov. A y B no pueden pasar a la vez: solo uno."
+ },
+ {
+  "created_utc": "2026-11-09T23:25:00+00:00",
+  "asset": "BTC",
+  "symbol": "BTCUSDT",
+  "levels": [
+   {
+    "price": 76250,
+    "label": "Stop"
+   },
+   {
+    "price": 75500,
+    "label": "Venta"
+   },
+   {
+    "price": 74750,
+    "label": "+1R mitad"
+   },
+   {
+    "price": 74000,
+    "label": "Objetivo"
+   }
+  ],
+  "path": [
+   [
+    0,
+    75150
+   ],
+   [
+    3.4,
+    75450
+   ],
+   [
+    4.3,
+    75400
+   ],
+   [
+    5.2,
+    74750
+   ],
+   [
+    8.6,
+    74000
+   ]
+  ],
+  "why": "D1 y 4h bajistas (bajo EMA200 diaria 76.836). Resistencia 75.400-75.600 (piso roto del rango; tocó 75.568 a las 17:00 del 9-nov sin romper). Valor esperado ~0: plan secundario.",
+  "expect": "Checar: 10-nov 15:00-18:30 rebote a 75.400-75.600 y rechazo en 15m, venta 75.500 (tu broker 75.463) · ~22:00 del 10-nov en 74.750 (+1R) · ~12:00 del 11-nov en 74.000. Cierre de 4h sobre 76.250: cancelado."
+ },
+ {
+  "created_utc": "2026-11-10T12:20:00+00:00",
+  "asset": "ORO",
+  "symbol": "XAU/USD",
+  "levels": [
+   {
+    "price": 4115,
+    "label": "Stop"
+   },
+   {
+    "price": 4100,
+    "label": "Venta"
+   },
+   {
+    "price": 4085,
+    "label": "+1R mitad"
+   },
+   {
+    "price": 4058,
+    "label": "Objetivo"
+   }
+  ],
+  "path": [
+   [
+    0,
+    4078
+   ],
+   [
+    1,
+    4098
+   ],
+   [
+    1.6,
+    4100
+   ],
+   [
+    2.5,
+    4085
+   ],
+   [
+    4,
+    4060
+   ]
+  ],
+  "why": "Rechazado en la EMA50 diaria (4.144-4.149) y cayó a 4.069: rompió a la baja el rango de 20 velas en 1h. D1 bajista (trend -38); 15m y 30m bajistas fuertes (-75). Pero está sobre soportes (EMA20 diaria 4.067, EMA50 4h 4.058): vender aquí es vender encima de soporte. Probable IPC de EE. UU. hoy a las 15:30.",
+  "expect": "Después de las 16:00: venta solo si rebota a 4.095-4.105 y lo rechazan en 15m (stop 4.115, +1R 4.085, objetivo 4.058). Lote reducido 0,33 por volatilidad extrema del 4h. Sin IPC confirmado, igual esperar 16:00."
+ },
+ {
+  "created_utc": "2026-11-10T12:20:00+00:00",
+  "asset": "BTC",
+  "symbol": "BTCUSDT",
+  "levels": [
+   {
+    "price": 75650,
+    "label": "Stop"
+   },
+   {
+    "price": 75000,
+    "label": "Venta"
+   },
+   {
+    "price": 74350,
+    "label": "+1R mitad"
+   },
+   {
+    "price": 73700,
+    "label": "Objetivo"
+   }
+  ],
+  "path": [
+   [
+    0,
+    74366
+   ],
+   [
+    1.2,
+    74950
+   ],
+   [
+    2,
+    74700
+   ],
+   [
+    4,
+    73800
+   ]
+  ],
+  "why": "Bajista en todas las temporalidades (D1 y 4h -75). Glassnode: vendedores dominan, ETF -1.282 M en la semana. Soporte 73.000-73.510 cerca: vender abajo es perseguir. IPC hoy: puede moverlo fuerte.",
+  "expect": "Venta solo si rebota a 74.900-75.050 (EMA20/50 de 1h) y lo rechazan en 15m después de las 16:00: stop 75.650, objetivo 73.700. Valor esperado ~0: secundaria."
+ },
+ {
+  "created_utc": "2026-11-10T12:20:00+00:00",
+  "asset": "EUR",
+  "symbol": "EUR/USD",
+  "levels": [
+   {
+    "price": 1.1257,
+    "label": "Techo compresión"
+   },
+   {
+    "price": 1.1215,
+    "label": "Piso compresión"
+   }
+  ],
+  "path": [
+   [
+    0,
+    1.1218
+   ],
+   [
+    1.5,
+    1.124
+   ],
+   [
+    3,
+    1.122
+   ]
+  ],
+  "why": "Comprimido entre 1,1215 y 1,1257 (volatilidad 1h percentil 18). D1 bajista vs 4h alcista sin fuerza. El IPC decidirá la ruptura.",
+  "expect": "Sin operación. Prioridad al oro."
+ }
+]

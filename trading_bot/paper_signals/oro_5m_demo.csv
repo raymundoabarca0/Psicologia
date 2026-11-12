@@ -1,1 +1,2 @@
-n,fecha,direccion,rango_max,rango_min,entrada,stop,objetivo,lotes,salida,resultado_usd,R,nota
+n,fecha_servidor,direccion,rango_max,rango_min,entrada,stop,objetivo,lotes,salida,resultado_usd,saldo,nota
+0,2026-11-12,,,,,,,,,,100.45,Saldo inicial (demo 100.100,45)

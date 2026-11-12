@@ -23,28 +23,20 @@ errores; la rentabilidad es secundaria. Ser honesto: si algo no funciona o pierd
 - Caveman mode activo por defecto (señales y advertencias completas); "normal mode" lo quita.
 - Capital real previsto: 100 USD; todavía no opera con dinero real.
 
-## Estado (2026-11-05)
+## Estado (2026-11-12)
 
-- Etapa 1 (riesgo, validación de órdenes y datos) y Etapa 2 (backtest walk-forward) hechas.
-  Resultado de la Etapa 2: ninguna estrategia simple (EMA, Donchian, RSI2) tiene ventaja
-  después de costos. Ver `trading_bot/backtest/RESULTADOS_ETAPA2.md`.
-- En curso: experimento de señales discrecionales en paper, del 2026-11-04 al 2026-11-11.
-  - Registro: `trading_bot/paper_signals/signals.csv` (nunca editar señales pasadas, salvo
-    `manual_close_utc` con la hora ACTUAL; leer esa columna con dtype string).
-  - Vigilancia sin señal: `trading_bot/paper_signals/watch.json`.
-  - Resultados de la demo del usuario: `trading_bot/paper_signals/demo_usuario.csv`.
-  - Herramientas (analyze incluye TREND METER -100..+100, medidor de VOLATILIDAD
-    —percentil del ATR14 en 200 velas—, VELAS (doji, martillo, estrella fugaz, envolventes,
-    inside bar, estrellas de la mañana/tarde), GRÁFICO (estructura, doble techo/piso, triángulo,
-    ruptura de rango de 20 velas) y un TABLERO final, desde el 2026-11-10): `python -m paper_signals.analyze 1d 4h` / `1h 30m 15m`,
-    `python -m paper_signals.evaluate`, `python -m paper_signals.charts` (desde `trading_bot/`).
-  - Al 2026-11-05: 2 operaciones cerradas, ambas perdedoras (simulación 98,66 USD de 100).
-  - TERMINADO el 2026-11-11: reporte final en `trading_bot/paper_signals/REPORTE_FINAL.md`
-    (simulación −1,34%; demo +1,02%). Pendiente: el usuario decide si sigue el análisis diario.
-  - Demo del usuario al 2026-11-06: saldo 101.017,25 USD (+1.017,25). El 6-nov ganó +1.127 en
-    dos ventas de oro tomadas de planes condicionales (no señales), una de ellas duplicada.
-  - 2026-11-12: el usuario dejó su demo en 100.100,45 USD (perdió una operación a propósito) para
-    empezar la prueba S2c con 0,01 lote: los 100,45 de arriba del 100.000 son la "cuenta de 100 USD".
+- Etapa 1 (riesgo, validación de órdenes y datos) y Etapa 2 (backtest walk-forward) hechas: ninguna
+  estrategia simple tiene ventaja después de costos (`trading_bot/backtest/RESULTADOS_ETAPA2.md`).
+- Experimento de señales del 4 al 11-nov TERMINADO (simulación −1,34%; demo +1,02%). Todo su
+  registro está archivado en `trading_bot/paper_signals/archivo_2026-11/` (no borrar).
+- DESDE EL 2026-11-12 (pedido del usuario: empezar de cero, "más concretos y certeros"):
+  - Una sola regla en prueba: S2c en oro 5m, cuenta virtual de 100,45 USD (su demo en 100.100,45),
+    lote fijo 0,01. Registro único: `trading_bot/paper_signals/oro_5m_demo.csv` (con columna saldo).
+  - `signals.csv` y `watch.json` empiezan vacíos; `evaluate` y `charts` funcionan sin señales.
+  - Mensajes cortos y concretos: precio, nivel, acción. Sin planes de relleno.
+- Herramientas (desde `trading_bot/`): `python -m paper_signals.analyze 1d 4h 1h 15m` (trend meter,
+  volatilidad, velas, figuras y tablero), `python -m paper_signals.evaluate`, `python -m paper_signals.charts`.
+  Backtests: `backtest/RESULTADOS_ORO_5M.md` (S2c y variantes) y `backtest/RESULTADOS_ORO_TENDENCIA.md`.
 - Twelve Data conectado (2026-11-06): la API key la inyecta el proxy en `api.twelvedata.com`
   (no hay variable de entorno). Plan basic: 8 peticiones/min, 800/día. XAU/USD y EUR/USD
   funcionan. Pasar siempre `timezone=UTC` (por defecto devuelve otra zona horaria).

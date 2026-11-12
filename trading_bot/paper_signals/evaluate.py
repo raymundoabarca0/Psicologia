@@ -203,6 +203,11 @@ def _calibration(done: pd.DataFrame) -> str:
 
 
 def main() -> None:
+    if pd.read_csv(SIGNALS).empty:
+        msg = "# Señales\n\nSin señales registradas desde el 2026-11-12 (las anteriores están en archivo_2026-11/).\n"
+        REPORT.write_text(msg, encoding="utf-8")
+        print(msg)
+        return
     df = evaluate()
     done = df[df.estado.isin(["tp", "stop", "stop_protegido", "gap_stop", "manual"])]
     open_ = df[df.estado == "abierta"]

@@ -153,6 +153,8 @@ def _expected_path(sig, ref: float, created: pd.Timestamp) -> list:
 
 def chart_signals() -> list[Path]:
     sigs = pd.read_csv(SIGNALS)
+    if sigs.empty:
+        return []
     ev = evaluate().set_index("id")
     outs = []
     for s in sigs.itertuples():

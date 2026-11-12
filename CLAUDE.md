@@ -30,7 +30,7 @@ errores; la rentabilidad es secundaria. Ser honesto: si algo no funciona o pierd
 - Experimento de señales del 4 al 11-nov TERMINADO (simulación −1,34%; demo +1,02%). Todo su
   registro está archivado en `trading_bot/paper_signals/archivo_2026-11/` (no borrar).
 - DESDE EL 2026-11-12 (pedido del usuario: empezar de cero, "más concretos y certeros"):
-  - Una sola regla en prueba: S2c en oro 5m, cuenta virtual de 100,45 USD (su demo en 100.100,45),
+  - Una sola regla en prueba: S2c en oro 5m, cuenta virtual de 100 USD,
     lote fijo 0,01. Registro único: `trading_bot/paper_signals/oro_5m_demo.csv` (con columna saldo).
   - `signals.csv` y `watch.json` empiezan vacíos; `evaluate` y `charts` funcionan sin señales.
   - Mensajes cortos y concretos: precio, nivel, acción. Sin planes de relleno.

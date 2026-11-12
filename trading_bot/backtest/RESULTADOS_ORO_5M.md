@@ -45,3 +45,20 @@ cierra fuera del rango de las últimas 6 o 12 velas. Objetivo 2R. Script:
 
 Conclusión: ganó en la primera mitad (agosto-septiembre) y perdió en la segunda (octubre-noviembre)
 en todas las variantes: no es estable. Da ~2-3 operaciones por día (riesgo de sobreoperar).
+
+## Filtros del Trend Meter de TradingView sobre S2c (2026-11-12)
+Datos actualizados: 18.995 velas de 5m, del 2026-08-12 al 2026-11-12 (incluye la ganadora del
+11-nov). Script: `backtest/oro_5m_trend_meter.py`.
+
+| Variante (objetivo 2R) | Operaciones | Ganadoras | R por op. | Total | 1ª mitad | 2ª mitad |
+|---|---|---|---|---|---|---|
+| S2c base (dirección EMA20/50 de 1h) | 41 | 46% | +0,31 | +12,5R | +4,8R | +7,8R |
+| S2c con dirección EMA240/600 en 5m | 41 | 46% | +0,31 | +12,5R | idéntico | idéntico |
+| + 3 puntos del Trend Meter (MACD, RSI13, RSI5) | 34 | 44% | +0,21 | +7,1R | +1,1R | +6,0R |
+| + Trend Bar 1 (EMA20/50 de 5m) | 19 | 47% | +0,28 | +5,3R | +0,7R | +4,5R |
+| + 3 puntos + Trend Bar 1 | 17 | 53% | +0,44 | +7,4R | +1,8R | +5,6R |
+
+Conclusión: la EMA240/600 en 5m da exactamente las mismas operaciones que la EMA20/50 de 1h
+(sirve para ver la dirección en TradingView sin cambiar de gráfica). Los filtros del Trend Meter
+quitan operaciones y bajan la ganancia total; la mejora por operación del filtro doble se basa en
+17 operaciones (ruido probable). Se mantiene S2c sin filtros.

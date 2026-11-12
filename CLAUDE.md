@@ -15,7 +15,9 @@ errores; la rentabilidad es secundaria. Ser honesto: si algo no funciona o pierd
 - No operar por el usuario: él confirma y coloca cada orden a mano (desde el celular).
 - Sin scalping: nada de 1m ni 5m. Solo 15m, 30m, 1h, 4h (y D1 para dirección).
   Excepción pedida por el usuario el 2026-11-10: prueba de 10 operaciones de oro en 5m en la
-  demo con 0,25% de riesgo (250 USD), regla S2c (ruptura del rango 15:00-15:30). Ver
+  demo, regla S2c (ruptura del rango 15:00-15:30). Desde el 2026-11-12: lote fijo 0,01 (1 onza)
+  como si la cuenta fuera de 100 USD; no se opera si el stop pasa de 8 USD; se para si la cuenta
+  virtual de 100 USD baja a 70. Ver
   `trading_bot/backtest/RESULTADOS_ORO_5M.md`; registro en `paper_signals/oro_5m_demo.csv`.
 - No borrar nada del repositorio Psicologia; se deja como está.
 - Caveman mode activo por defecto (señales y advertencias completas); "normal mode" lo quita.

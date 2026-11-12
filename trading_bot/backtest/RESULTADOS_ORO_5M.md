@@ -62,3 +62,10 @@ Conclusión: la EMA240/600 en 5m da exactamente las mismas operaciones que la EM
 (sirve para ver la dirección en TradingView sin cambiar de gráfica). Los filtros del Trend Meter
 quitan operaciones y bajan la ganancia total; la mejora por operación del filtro doble se basa en
 17 operaciones (ruido probable). Se mantiene S2c sin filtros.
+
+## Prueba en la demo como cuenta de 100 USD (acordado el 2026-11-12)
+Con 100 USD el lote mínimo de oro (0,01 = 1 onza) arriesga ~6-8% por operación. Backtest de S2c con
+0,01 lote fijo (2026-08-13 a 2026-11-11): todos los días 41 ops, 100 -> 168 USD, peor caída −47;
+solo días con stop <= 8 USD: 31 ops, 100 -> 194 USD, peor caída −29 (filtro elegido viendo los
+resultados). Reglas de la prueba: solo S2c, máximo 1 operación al día, lote 0,01, no operar si el
+stop > 8 USD (rango > 16), parar si la cuenta virtual baja a 70 USD. Registro: paper_signals/oro_5m_demo.csv.

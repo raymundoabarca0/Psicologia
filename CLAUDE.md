@@ -83,12 +83,14 @@ errores; la rentabilidad es secundaria. Ser honesto: si algo no funciona o pierd
 - Noticias: `get_upcoming_macro_events` de CoinMarketCap como contexto (no es calendario
   oficial); recomendar confirmar en Forex Factory o Investing.com.
 
-## Análisis diario
+## Análisis cada 2 horas (desde el 2026-11-12)
 
-Tarea programada diaria a las 12:10 UTC (14:10 del servidor), en la sesión del 2026-11-05
-(rama `claude/new-session-1mlq7o`). Si esta es una sesión nueva,
-el usuario puede pedir recrearla aquí; en ese caso borrar la de la sesión anterior para no
-duplicar. El 2026-11-11: reporte final honesto y preguntar si se continúa.
+Tarea programada `trig_01DoTDWzabtwYpfrX4ZaLNEV` (la misma que hacía el análisis diario),
+lunes a viernes a las 07:35, 09:35, 11:35, 13:35, 15:35 y 17:35 UTC (09:35 a 19:35 del servidor).
+Foco en oro: puntos clave, regla S2c de 5m (rango 15:00-15:30; la ejecución de 15:35 del servidor
+da el rango) y regla T3 de tendencia en 4h (`backtest/RESULTADOS_ORO_TENDENCIA.md`, 0,5% de
+riesgo mientras se prueba). Notifica solo si hay algo accionable. Si esta es una sesión nueva,
+el usuario puede pedir recrearla aquí; en ese caso borrar la de la sesión anterior.
 
 ## Skills instaladas (`.claude/skills/`)
 

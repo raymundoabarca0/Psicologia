@@ -43,6 +43,8 @@ errores; la rentabilidad es secundaria. Ser honesto: si algo no funciona o pierd
     (simulación −1,34%; demo +1,02%). Pendiente: el usuario decide si sigue el análisis diario.
   - Demo del usuario al 2026-11-06: saldo 101.017,25 USD (+1.017,25). El 6-nov ganó +1.127 en
     dos ventas de oro tomadas de planes condicionales (no señales), una de ellas duplicada.
+  - 2026-11-12: el usuario dejó su demo en 100.100,45 USD (perdió una operación a propósito) para
+    empezar la prueba S2c con 0,01 lote: los 100,45 de arriba del 100.000 son la "cuenta de 100 USD".
 - Twelve Data conectado (2026-11-06): la API key la inyecta el proxy en `api.twelvedata.com`
   (no hay variable de entorno). Plan basic: 8 peticiones/min, 800/día. XAU/USD y EUR/USD
   funcionan. Pasar siempre `timezone=UTC` (por defecto devuelve otra zona horaria).

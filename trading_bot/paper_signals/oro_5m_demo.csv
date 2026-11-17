@@ -2,3 +2,4 @@ n,fecha_servidor,direccion,rango_max,rango_min,entrada,stop,objetivo,lotes,salid
 0,2026-11-12,,,,,,,,,,100.00,Saldo inicial de la cuenta virtual
 1,2026-11-13,venta,3893.02,3879.43,3878.14,3884.94,3864.55,0.01,3884.94,-6.80,93.20,"Regla: cierre bajo el rango a las 17:25, entrada 17:30, stop tocado a las 18:25. Sin spread (~-0,34 más). Usuario aún no confirma si la tomó."
 2,2026-11-16,venta,3874.17,3862.20,3860.03,3866.01,3848.06,0.01,3866.01,-5.98,87.22,"Regla: cierre bajo el rango a las 17:55, entrada 18:00, stop tocado a las 19:00. Sin spread. Usuario no ha confirmado si la tomó."
+3,2026-11-17,venta,3863.54,3853.42,3851.73,3856.79,3841.61,0.01,3841.61,10.12,97.34,"Regla: cierre bajo el rango a las 15:30, entrada 15:35, objetivo tocado a las 15:40. Sin spread. Usuario no ha confirmado si la tomó."

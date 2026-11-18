@@ -110,6 +110,18 @@ quedan negativos.
 - En el Pine, `max_drawdown` (10%) y `max_intraday_loss` (3%) cortan la estrategia
   después de la primera pérdida si usas lote fijo con 100 USD.
 
+## 7. Prueba extra en 2020-07 a 2022 (oro bajando de 2.070 a 1.620)
+
+| | 2020-07 a 2022 | 2023–24 | 2025–26 |
+|---|---|---|---|
+| v4 original | +0,038 ± 0,06 | −0,016 | −0,037 |
+| v5 robusta | **+0,035 ± 0,09** (258 ops, DD 24,8 R) | +0,18 | +0,14 |
+| v5 sin costos | +0,12 | +0,25 | +0,17 |
+
+v5 no pierde en un mercado bajista (las ventas dan +0,17 R), pero en ese periodo su
+ventaja casi desaparece después de costos. Sale positiva en los 3 periodos, aunque
+débil: no es prueba de ventaja.
+
 ## Conclusión
 
 - v4 tal cual: pierde después de costos, dentro y fuera de muestra. No operarla.

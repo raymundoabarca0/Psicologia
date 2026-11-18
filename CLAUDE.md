@@ -23,7 +23,8 @@ errores; la rentabilidad es secundaria. Ser honesto: si algo no funciona o pierd
   - Al 2026-11-05: 2 operaciones cerradas, ambas perdedoras (simulación 98,66 USD de 100).
 - Estrategia Pine del usuario (oro 1H/15m liquidez): `trading_bot/pine/`, motor `backtest/oro_liquidez.py`,
   reporte `backtest/RESULTADOS_ORO.md`. v4 pierde tras costos; v5 (TP 3R, stop 2,5 ATR) +0,14 R OOS,
-  no significativo. El usuario quiere 100 USD, 0,01 lote, 10% por operación (choca con la regla del 1%).
+  no significativo (2020-22: +0,035 R). HTF Level Breakout (`RESULTADOS_HTF.md`): sin ventaja.
+  Datos 2020-06 a 2026: `data/xauusd_15m_utc_2020_2026.csv` (Twelve Data). El usuario quiere 100 USD, 0,01 lote, 10% por operación (choca con la regla del 1%).
 - Datos: espejo público de Binance `data-api.binance.vision` (api.binance.com bloquea los
   servidores de EE. UU.). Oro = PAXGUSDT, euro = EURUSDT, BTC = BTCUSDT.
 

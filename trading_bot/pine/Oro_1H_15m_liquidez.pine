@@ -1,5 +1,10 @@
 //@version=6
-// ORO (XAUUSD) — Tendencia 1H + entradas 15m por liquidez (v4, simplificada).
+// ORO (XAUUSD) — Tendencia 1H + entradas 15m por liquidez (v5).
+// v5 (2026-11-18): parámetros elegidos en el backtest de Python con walk-forward
+//   (optimizado 2023–2024, validado 2025–2026 sin tocar). Ver trading_bot/backtest/RESULTADOS_ORO.md.
+//   Cambios vs v4: TP 3R, stop máx. 2,5 ATR, margen 0,1 ATR, confirmación en 2 velas,
+//   volatilidad mínima 0,9; costos realistas; opción de lote fijo.
+//   Ventaja fuera de muestra: +0,14 R por operación, NO es estadísticamente segura.
 // Cárgala en un gráfico de 15 minutos.
 //
 // Tendencia: EMA 200 de 1H (vela cerrada, sin repintar).
@@ -13,10 +18,11 @@
 // Lo apagado por defecto se puede activar en Configuración para comparar en el probador.
 // Úsala SOLO para backtest y paper trading antes de arriesgar dinero real.
 
-strategy("Oro 1H/15m - Liquidez v4", overlay = true,
+strategy("Oro 1H/15m - Liquidez v5", overlay = true,
      initial_capital = 10000,
-     commission_type = strategy.commission.percent, commission_value = 0.01,
-     slippage = 3,
+     // Costos tipo broker: spread 0,30 USD/onza (0,15 por lado) + slippage. Cantidad en onzas.
+     commission_type = strategy.commission.cash_per_contract, commission_value = 0.15,
+     slippage = 10,
      pyramiding = 0,
      calc_on_every_tick = false,
      max_boxes_count = 200, max_labels_count = 500)
@@ -39,7 +45,7 @@ asiaSess     = input.session("1900-0200", "Sesión asiática (hora de Nueva York
 usePivots    = input.bool(false, "Usar pivotes de 15m como liquidez (prueba)", group = grpL)
 pivLen       = input.int(5, "Fuerza de pivotes", group = grpL)
 useConfirm   = input.bool(true, "Esperar vela de confirmación tras el barrido", group = grpL)
-confirmBars  = input.int(3, "Velas máximas para confirmar", group = grpL)
+confirmBars  = input.int(2, "Velas máximas para confirmar", group = grpL)
 useZones     = input.bool(true, "Comprar solo abajo del 50% / vender solo arriba", group = grpL)
 
 grpB = "Acumulación y rupturas"
@@ -58,18 +64,22 @@ sess         = input.session("0200-1200", "Sesión de operación (hora de Nueva 
 useNews      = input.bool(true, "Bloquear horas de noticias", group = grpF,
      tooltip = "Bloquea 8:15–9:15 NY todos los días (datos de EE. UU. a las 8:30) y 13:45–15:00 NY los miércoles (FOMC).")
 useVol       = input.bool(true, "Exigir volatilidad mínima", group = grpF)
-minAtrRatio  = input.float(0.7, "ATR mínimo vs. promedio del día", step = 0.05, group = grpF)
+minAtrRatio  = input.float(0.9, "ATR mínimo vs. promedio del día", step = 0.05, group = grpF)
 maxTrades    = input.int(2, "Máximo de operaciones por día", group = grpF)
 avoidLevels  = input.bool(true, "No entrar pegado a PDH/PDL", group = grpF)
 nearLevelAtr = input.float(0.5, "Distancia mínima a PDH/PDL (ATR)", step = 0.1, group = grpF)
 
 grpR = "Salidas y protección de la cuenta"
 riskPct    = input.float(1.0, "Riesgo por operación (% del capital)", step = 0.1, group = grpR)
+useFixedQty = input.bool(false, "Usar lote fijo en vez de % de riesgo", group = grpR,
+     tooltip = "0,01 lote de MetaTrader = 1 onza. Con 100 USD y 1 onza cada stop pesa 3–25% de la cuenta: riesgo muy alto.")
+fixedQty    = input.float(1.0, "Lote fijo (onzas)", step = 0.01, group = grpR)
+maxRiskFix  = input.float(10.0, "Con lote fijo: no entrar si el stop arriesga más de (%)", step = 0.5, group = grpR)
 atrLen     = input.int(14,  "ATR (15m)", group = grpR)
-atrMult    = input.float(2.0, "Stop máximo (ATR)", step = 0.1, group = grpR)
-stopBuffer = input.float(0.2, "Margen extra bajo/sobre la estructura (ATR)", step = 0.05, group = grpR)
+atrMult    = input.float(2.5, "Stop máximo (ATR)", step = 0.1, group = grpR)
+stopBuffer = input.float(0.1, "Margen extra bajo/sobre la estructura (ATR)", step = 0.05, group = grpR)
 useTp      = input.bool(true, "Usar take profit fijo", group = grpR)
-rrTarget   = input.float(2.0, "Take profit (R)", step = 0.1, group = grpR)
+rrTarget   = input.float(3.0, "Take profit (R)", step = 0.1, group = grpR)
 useBE      = input.bool(true, "Mover stop a break-even", group = grpR)
 beR        = input.float(1.0, "Break-even al avanzar (R)", step = 0.1, group = grpR)
 useTrail   = input.bool(false, "Trailing con Supertrend 15m (prueba)", group = grpR)
@@ -240,9 +250,14 @@ longSignal  = canTrade and nearOkLong and (longSweepNow or longBreak)
 shortSignal = canTrade and nearOkShort and (shortSweepNow or shortBreak) and not longSignal
 
 calcQty(stopDist) =>
-    riskAmt = strategy.equity * riskPct / 100
-    q = stopDist > 0 ? riskAmt / (stopDist * syminfo.pointvalue) : 0.0
-    math.floor(q * 100) / 100
+    float q = 0.0
+    if useFixedQty
+        q := stopDist > 0 and stopDist * fixedQty * syminfo.pointvalue <= strategy.equity * maxRiskFix / 100 ? fixedQty : 0.0
+    else
+        riskAmt = strategy.equity * riskPct / 100
+        q := stopDist > 0 ? riskAmt / (stopDist * syminfo.pointvalue) : 0.0
+        q := math.floor(q * 100) / 100
+    q
 
 var float longStop  = na
 var float shortStop = na

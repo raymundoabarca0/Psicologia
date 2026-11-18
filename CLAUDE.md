@@ -21,6 +21,9 @@ errores; la rentabilidad es secundaria. Ser honesto: si algo no funciona o pierd
   - Herramientas: `python -m paper_signals.analyze 1d 4h` / `1h 30m 15m`,
     `python -m paper_signals.evaluate`, `python -m paper_signals.charts` (desde `trading_bot/`).
   - Al 2026-11-05: 2 operaciones cerradas, ambas perdedoras (simulación 98,66 USD de 100).
+- Estrategia Pine del usuario (oro 1H/15m liquidez): `trading_bot/pine/`, motor `backtest/oro_liquidez.py`,
+  reporte `backtest/RESULTADOS_ORO.md`. v4 pierde tras costos; v5 (TP 3R, stop 2,5 ATR) +0,14 R OOS,
+  no significativo. El usuario quiere 100 USD, 0,01 lote, 10% por operación (choca con la regla del 1%).
 - Datos: espejo público de Binance `data-api.binance.vision` (api.binance.com bloquea los
   servidores de EE. UU.). Oro = PAXGUSDT, euro = EURUSDT, BTC = BTCUSDT.
 

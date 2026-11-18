@@ -1,0 +1,413 @@
+//@version=6
+// ORO (XAUUSD) — Tendencia 1H + entradas 15m por liquidez (v4, simplificada).
+// Cárgala en un gráfico de 15 minutos.
+//
+// Tendencia: EMA 200 de 1H (vela cerrada, sin repintar).
+// Liquidez: máximo/mínimo del día anterior (PDH/PDL) + rango de la sesión asiática.
+// Entrada principal: BARRIDO de liquidez + VELA DE CONFIRMACIÓN, en la zona correcta
+//   (compras abajo del 50% del día anterior, ventas arriba).
+// Entrada secundaria: RUPTURA de una zona de acumulación a favor de la tendencia.
+// Filtros: sesión Londres/NY, horas de noticias, volatilidad mínima, máx. operaciones por día.
+// Salida: TP fijo en R + break-even a 1R (trailing opcional).
+// Protección: 1% por operación, corte diario 3%, corte total al perder 10% desde el máximo.
+// Lo apagado por defecto se puede activar en Configuración para comparar en el probador.
+// Úsala SOLO para backtest y paper trading antes de arriesgar dinero real.
+
+strategy("Oro 1H/15m - Liquidez v4", overlay = true,
+     initial_capital = 10000,
+     commission_type = strategy.commission.percent, commission_value = 0.01,
+     slippage = 3,
+     pyramiding = 0,
+     calc_on_every_tick = false,
+     max_boxes_count = 200, max_labels_count = 500)
+
+NY = "America/New_York"
+
+// ───────── Parámetros ─────────
+grpH = "Tendencia (1H)"
+htf            = input.timeframe("60", "Temporalidad de tendencia", group = grpH)
+emaTrendLen    = input.int(200, "EMA filtro de tendencia", group = grpH)
+useTrendFilter = input.bool(true, "Operar solo a favor de la tendencia 1H", group = grpH)
+useHtfSt       = input.bool(false, "Exigir también Supertrend 1H (prueba)", group = grpH)
+useAdx         = input.bool(false, "Exigir ADX 1H en rupturas (prueba)", group = grpH)
+adxMin         = input.float(20, "ADX mínimo", group = grpH)
+
+grpL = "Liquidez y barridos"
+useSweep     = input.bool(true, "Entrada por barrido de liquidez", group = grpL)
+useAsia      = input.bool(true, "Usar rango de sesión asiática como liquidez", group = grpL)
+asiaSess     = input.session("1900-0200", "Sesión asiática (hora de Nueva York)", group = grpL)
+usePivots    = input.bool(false, "Usar pivotes de 15m como liquidez (prueba)", group = grpL)
+pivLen       = input.int(5, "Fuerza de pivotes", group = grpL)
+useConfirm   = input.bool(true, "Esperar vela de confirmación tras el barrido", group = grpL)
+confirmBars  = input.int(3, "Velas máximas para confirmar", group = grpL)
+useZones     = input.bool(true, "Comprar solo abajo del 50% / vender solo arriba", group = grpL)
+
+grpB = "Acumulación y rupturas"
+useBreakout  = input.bool(true, "Entrada por ruptura de acumulación", group = grpB)
+rangeLen     = input.int(20, "Velas para detectar lateralización", group = grpB)
+rangeAtrMult = input.float(3.0, "Ancho máximo del rango (en ATR)", step = 0.1, group = grpB)
+breakWindow  = input.int(12, "Velas válidas para la ruptura tras el rango", group = grpB)
+useSt15      = input.bool(false, "Exigir Supertrend 15m en rupturas (prueba)", group = grpB)
+stFactor     = input.float(3.0, "Supertrend 15m factor", step = 0.1, group = grpB)
+stLen        = input.int(10,  "Supertrend 15m ATR", group = grpB)
+
+grpF = "Filtros"
+allowShorts  = input.bool(true, "Permitir ventas (cortos)", group = grpF)
+useSess      = input.bool(true, "Operar solo en sesión Londres/NY", group = grpF)
+sess         = input.session("0200-1200", "Sesión de operación (hora de Nueva York)", group = grpF)
+useNews      = input.bool(true, "Bloquear horas de noticias", group = grpF,
+     tooltip = "Bloquea 8:15–9:15 NY todos los días (datos de EE. UU. a las 8:30) y 13:45–15:00 NY los miércoles (FOMC).")
+useVol       = input.bool(true, "Exigir volatilidad mínima", group = grpF)
+minAtrRatio  = input.float(0.7, "ATR mínimo vs. promedio del día", step = 0.05, group = grpF)
+maxTrades    = input.int(2, "Máximo de operaciones por día", group = grpF)
+avoidLevels  = input.bool(true, "No entrar pegado a PDH/PDL", group = grpF)
+nearLevelAtr = input.float(0.5, "Distancia mínima a PDH/PDL (ATR)", step = 0.1, group = grpF)
+
+grpR = "Salidas y protección de la cuenta"
+riskPct    = input.float(1.0, "Riesgo por operación (% del capital)", step = 0.1, group = grpR)
+atrLen     = input.int(14,  "ATR (15m)", group = grpR)
+atrMult    = input.float(2.0, "Stop máximo (ATR)", step = 0.1, group = grpR)
+stopBuffer = input.float(0.2, "Margen extra bajo/sobre la estructura (ATR)", step = 0.05, group = grpR)
+useTp      = input.bool(true, "Usar take profit fijo", group = grpR)
+rrTarget   = input.float(2.0, "Take profit (R)", step = 0.1, group = grpR)
+useBE      = input.bool(true, "Mover stop a break-even", group = grpR)
+beR        = input.float(1.0, "Break-even al avanzar (R)", step = 0.1, group = grpR)
+useTrail   = input.bool(false, "Trailing con Supertrend 15m (prueba)", group = grpR)
+maxDayLoss = input.float(3.0, "Pérdida diaria máxima (%)", group = grpR)
+maxDD      = input.float(10.0, "Pérdida máxima de la cuenta (%) → deja de operar", group = grpR)
+showTable  = input.bool(true, "Mostrar panel de información", group = grpR)
+
+strategy.risk.max_intraday_loss(maxDayLoss, strategy.percent_of_equity)
+strategy.risk.max_drawdown(maxDD, strategy.percent_of_equity)
+
+// ───────── Tendencia 1H (vela cerrada) ─────────
+htfData() =>
+    e = ta.ema(close, emaTrendLen)
+    [s, d] = ta.supertrend(3.0, 10)
+    [dp, dm, a] = ta.dmi(14, 14)
+    [e[1], d[1], a[1], close[1]]
+
+[hEma, hDir, hAdx, hClose] = request.security(syminfo.tickerid, htf, htfData(), lookahead = barmerge.lookahead_on)
+
+htfBull = hClose > hEma and (not useHtfSt or hDir < 0)
+htfBear = hClose < hEma and (not useHtfSt or hDir > 0)
+adxOk   = not useAdx or hAdx >= adxMin
+trendLongOk  = not useTrendFilter or htfBull
+trendShortOk = not useTrendFilter or htfBear
+
+// ───────── Día anterior y zonas ─────────
+[pdh, pdl] = request.security(syminfo.tickerid, "D", [high[1], low[1]], lookahead = barmerge.lookahead_on)
+eq = (pdh + pdl) / 2
+
+// ───────── Utilidades ─────────
+atr = ta.atr(atrLen)
+atrAvg = ta.sma(atr, 96)
+[st, stDir] = ta.supertrend(stFactor, stLen)
+toTicks(d) => math.round(math.abs(d) / syminfo.mintick)
+fmt(p) => str.tostring(p, format.mintick)
+inWindow(s) => not na(time(timeframe.period, s, NY))
+
+inSess    = not useSess or inWindow(sess)
+newsBlock = useNews and (inWindow("0815-0915") or (dayofweek(time, NY) == dayofweek.wednesday and inWindow("1345-1500")))
+volOk     = not useVol or na(atrAvg) or atr >= atrAvg * minAtrRatio
+flat      = strategy.position_size == 0
+
+// Operaciones por día
+var int tradesToday = 0
+if ta.change(time("D")) != 0
+    tradesToday := 0
+
+// ───────── Rango asiático ─────────
+inAsia = inWindow(asiaSess)
+var float asHi  = na
+var float asLo  = na
+var float asHiF = na     // rango final (solo válido después de cerrar Asia)
+var float asLoF = na
+var box   asBox = na
+
+if inAsia and not inAsia[1]
+    asHi := high
+    asLo := low
+    asHiF := na
+    asLoF := na
+    if useAsia
+        asBox := box.new(bar_index, high, bar_index, low, border_color = color.new(color.blue, 40),
+             bgcolor = color.new(color.blue, 90), text = "Rango Asia", text_color = color.new(color.blue, 20),
+             text_size = size.small, text_halign = text.align_left, text_valign = text.align_top)
+else if inAsia
+    asHi := math.max(asHi, high)
+    asLo := math.min(asLo, low)
+    if useAsia and not na(asBox)
+        box.set_top(asBox, asHi)
+        box.set_bottom(asBox, asLo)
+        box.set_right(asBox, bar_index)
+
+if not inAsia and inAsia[1]
+    asHiF := asHi
+    asLoF := asLo
+
+// ───────── Lateralización / acumulación ─────────
+rngHi   = ta.highest(high, rangeLen)[1]
+rngLo   = ta.lowest(low, rangeLen)[1]
+isRange = (rngHi - rngLo) <= rangeAtrMult * atr
+
+var float boxHi       = na
+var float boxLo       = na
+var int   rangeEndBar = na
+var box   rBox        = na
+
+if isRange
+    if not isRange[1] or na(rBox)
+        boxHi := rngHi
+        boxLo := rngLo
+        rBox := box.new(bar_index - rangeLen, rngHi, bar_index, rngLo,
+             border_color = color.new(color.gray, 30), bgcolor = color.new(color.gray, 85),
+             text = "Acumulación", text_color = color.gray, text_size = size.small,
+             text_halign = text.align_left, text_valign = text.align_top)
+    else
+        boxHi := math.max(boxHi, rngHi)
+        boxLo := math.min(boxLo, rngLo)
+        box.set_top(rBox, boxHi)
+        box.set_bottom(rBox, boxLo)
+        box.set_right(rBox, bar_index)
+    rangeEndBar := bar_index
+
+recentRange = not na(rangeEndBar) and bar_index - rangeEndBar <= breakWindow
+breakUp     = recentRange and not na(boxHi) and close > boxHi and close[1] <= boxHi
+breakDown   = recentRange and not na(boxLo) and close < boxLo and close[1] >= boxLo
+
+// ───────── Liquidez y barridos ─────────
+ph = ta.pivothigh(high, pivLen, pivLen)
+pl = ta.pivotlow(low, pivLen, pivLen)
+var float liqHi = na
+var float liqLo = na
+if not na(ph)
+    liqHi := ph
+if not na(pl)
+    liqLo := pl
+
+sweptBelow(lvl) => not na(lvl) and low < lvl and close > lvl
+sweptAbove(lvl) => not na(lvl) and high > lvl and close < lvl
+
+rawSweepLow  = sweptBelow(pdl) or (useAsia and not inAsia and sweptBelow(asLoF)) or (usePivots and sweptBelow(liqLo))
+rawSweepHigh = sweptAbove(pdh) or (useAsia and not inAsia and sweptAbove(asHiF)) or (usePivots and sweptAbove(liqHi))
+
+if not na(liqHi) and high > liqHi
+    liqHi := na
+if not na(liqLo) and low < liqLo
+    liqLo := na
+
+longSetupOk  = useSweep and trendLongOk and (not useZones or close <= eq)
+shortSetupOk = useSweep and allowShorts and trendShortOk and (not useZones or close >= eq)
+
+// Barrido pendiente de confirmación
+var float pLLow  = na
+var float pLHigh = na
+var int   pLBar  = na
+var float pSHigh = na
+var float pSLow  = na
+var int   pSBar  = na
+
+if not na(pLBar) and bar_index > pLBar and (bar_index - pLBar > confirmBars or low < pLLow)
+    pLBar := na
+if not na(pSBar) and bar_index > pSBar and (bar_index - pSBar > confirmBars or high > pSHigh)
+    pSBar := na
+
+if rawSweepLow and longSetupOk
+    pLLow := low
+    pLHigh := high
+    pLBar := bar_index
+if rawSweepHigh and shortSetupOk
+    pSHigh := high
+    pSLow := low
+    pSBar := bar_index
+
+longSweepNow  = useConfirm ? (not na(pLBar) and bar_index > pLBar and close > pLHigh) : (rawSweepLow and longSetupOk)
+shortSweepNow = useConfirm ? (not na(pSBar) and bar_index > pSBar and close < pSLow) : (rawSweepHigh and shortSetupOk)
+sweepStopL = useConfirm ? pLLow : low
+sweepStopS = useConfirm ? pSHigh : high
+
+// ───────── Filtro de niveles ─────────
+nearOkLong  = not avoidLevels or na(pdh) or close >= pdh or (pdh - close) >= nearLevelAtr * atr
+nearOkShort = not avoidLevels or na(pdl) or close <= pdl or (close - pdl) >= nearLevelAtr * atr
+
+// ───────── Señales ─────────
+longBreak  = useBreakout and breakUp and trendLongOk and adxOk and (not useSt15 or stDir < 0)
+shortBreak = useBreakout and allowShorts and breakDown and trendShortOk and adxOk and (not useSt15 or stDir > 0)
+
+canTrade    = flat and inSess and not newsBlock and volOk and tradesToday < maxTrades
+longSignal  = canTrade and nearOkLong and (longSweepNow or longBreak)
+shortSignal = canTrade and nearOkShort and (shortSweepNow or shortBreak) and not longSignal
+
+calcQty(stopDist) =>
+    riskAmt = strategy.equity * riskPct / 100
+    q = stopDist > 0 ? riskAmt / (stopDist * syminfo.pointvalue) : 0.0
+    math.floor(q * 100) / 100
+
+var float longStop  = na
+var float shortStop = na
+var float longTp    = na
+var float shortTp   = na
+var float lastTp    = na
+var float entryRisk = na
+var int   lastRiskTicks = na
+
+// ───────── Entradas + marcas ─────────
+if longSignal
+    entryType   = longSweepNow ? "Barrido" : "Ruptura"
+    structStop  = longSweepNow ? sweepStopL - stopBuffer * atr : boxLo - stopBuffer * atr
+    longStop   := math.min(math.max(structStop, close - atrMult * atr), close - 0.3 * atr)
+    risk        = close - longStop
+    longTp     := useTp ? close + rrTarget * risk : na
+    qty = calcQty(risk)
+    if qty > 0
+        lastTp := longTp
+        entryRisk := risk
+        lastRiskTicks := toTicks(risk)
+        tradesToday += 1
+        pLBar := na
+        strategy.entry("Largo", strategy.long, qty = qty, comment = "Compra " + entryType)
+        strategy.exit("Salida Largo", from_entry = "Largo", stop = longStop, limit = longTp)
+        txt = "COMPRA (" + entryType + ")\nEntrada ≈ " + fmt(close) +
+             "\nSL " + fmt(longStop) + "  (-" + str.tostring(toTicks(risk)) + " ticks)" +
+             (useTp ? "\nTP " + fmt(longTp) + "  (+" + str.tostring(toTicks(longTp - close)) + " ticks)" : "\nTP: trailing")
+        label.new(bar_index, low, txt, yloc = yloc.belowbar, style = label.style_label_up,
+             color = color.new(color.green, 0), textcolor = color.white, size = size.small)
+        alert("COMPRA oro (" + entryType + ") ≈ " + fmt(close) + " | SL " + fmt(longStop) +
+             (useTp ? " | TP " + fmt(longTp) : ""), alert.freq_once_per_bar_close)
+
+if shortSignal
+    entryType   = shortSweepNow ? "Barrido" : "Ruptura"
+    structStop  = shortSweepNow ? sweepStopS + stopBuffer * atr : boxHi + stopBuffer * atr
+    shortStop  := math.max(math.min(structStop, close + atrMult * atr), close + 0.3 * atr)
+    risk        = shortStop - close
+    shortTp    := useTp ? close - rrTarget * risk : na
+    qty = calcQty(risk)
+    if qty > 0
+        lastTp := shortTp
+        entryRisk := risk
+        lastRiskTicks := toTicks(risk)
+        tradesToday += 1
+        pSBar := na
+        strategy.entry("Corto", strategy.short, qty = qty, comment = "Venta " + entryType)
+        strategy.exit("Salida Corto", from_entry = "Corto", stop = shortStop, limit = shortTp)
+        txt = "VENTA (" + entryType + ")\nEntrada ≈ " + fmt(close) +
+             "\nSL " + fmt(shortStop) + "  (-" + str.tostring(toTicks(risk)) + " ticks)" +
+             (useTp ? "\nTP " + fmt(shortTp) + "  (+" + str.tostring(toTicks(close - shortTp)) + " ticks)" : "\nTP: trailing")
+        label.new(bar_index, high, txt, yloc = yloc.abovebar, style = label.style_label_down,
+             color = color.new(color.red, 0), textcolor = color.white, size = size.small)
+        alert("VENTA oro (" + entryType + ") ≈ " + fmt(close) + " | SL " + fmt(shortStop) +
+             (useTp ? " | TP " + fmt(shortTp) : ""), alert.freq_once_per_bar_close)
+
+// ───────── Gestión: break-even y trailing (el stop nunca se afloja) ─────────
+if strategy.position_size > 0
+    avgP = strategy.position_avg_price
+    if useBE and not na(entryRisk) and high >= avgP + beR * entryRisk
+        longStop := math.max(longStop, avgP + 0.05 * entryRisk)
+    if useTrail and stDir < 0
+        longStop := math.max(longStop, st)
+    strategy.exit("Salida Largo", from_entry = "Largo", stop = longStop, limit = longTp)
+
+if strategy.position_size < 0
+    avgP = strategy.position_avg_price
+    if useBE and not na(entryRisk) and low <= avgP - beR * entryRisk
+        shortStop := math.min(shortStop, avgP - 0.05 * entryRisk)
+    if useTrail and stDir > 0
+        shortStop := math.min(shortStop, st)
+    strategy.exit("Salida Corto", from_entry = "Corto", stop = shortStop, limit = shortTp)
+
+// ───────── Resultado de cada operación cerrada ─────────
+var int    tpHits     = 0
+var int    otherWins  = 0
+var int    beCount    = 0
+var int    stopLosses = 0
+var string lastResult = "—"
+
+if strategy.closedtrades > nz(strategy.closedtrades[1])
+    idx    = strategy.closedtrades - 1
+    eP     = strategy.closedtrades.entry_price(idx)
+    xP     = strategy.closedtrades.exit_price(idx)
+    isLong = strategy.closedtrades.size(idx) > 0
+    tk     = math.round((isLong ? xP - eP : eP - xP) / syminfo.mintick)
+    hitTp  = not na(lastTp) and (isLong ? xP >= lastTp - syminfo.mintick : xP <= lastTp + syminfo.mintick)
+    isBE   = not hitTp and not na(lastRiskTicks) and math.abs(tk) <= 0.2 * lastRiskTicks
+    res    = hitTp ? "✅ TP cumplido" : isBE ? "⚪ Break-even" : tk > 0 ? "✅ Cierre en ganancia" : "❌ Stop loss"
+    if hitTp
+        tpHits += 1
+    else if isBE
+        beCount += 1
+    else if tk > 0
+        otherWins += 1
+    else
+        stopLosses += 1
+    lastResult := res + " " + (tk >= 0 ? "+" : "") + str.tostring(tk) + " ticks"
+    label.new(bar_index, xP, res + "\n" + (tk >= 0 ? "+" : "") + str.tostring(tk) + " ticks",
+         yloc = yloc.price, style = label.style_label_left,
+         color = hitTp or (tk > 0 and not isBE) ? color.new(color.teal, 0) : isBE ? color.new(color.gray, 0) : color.new(color.maroon, 0),
+         textcolor = color.white, size = size.small)
+
+if strategy.position_size == 0 and not longSignal and not shortSignal
+    longStop  := na
+    shortStop := na
+    longTp    := na
+    shortTp   := na
+
+// ───────── Protección de la cuenta ─────────
+var float peakEq = strategy.initial_capital
+peakEq := math.max(peakEq, strategy.equity)
+ddPct      = (peakEq - strategy.equity) / peakEq * 100
+roomToStop = strategy.equity - peakEq * (1 - maxDD / 100)
+
+// ───────── Gráfico ─────────
+plot(hEma, "EMA 200 (1H)", color = color.orange, linewidth = 2)
+pPdh = plot(pdh, "Máximo día anterior (PDH)", color = color.fuchsia, style = plot.style_stepline, linewidth = 2)
+pEq  = plot(eq,  "Equilibrio 50%", color = color.gray, style = plot.style_stepline)
+pPdl = plot(pdl, "Mínimo día anterior (PDL)", color = color.purple, style = plot.style_stepline, linewidth = 2)
+fill(pPdl, pEq, color = color.new(color.green, 90), title = "Zona de COMPRA (descuento)")
+fill(pEq, pPdh, color = color.new(color.red, 90), title = "Zona de VENTA (premium)")
+plot(useAsia ? asHiF : na, "Máximo Asia", color = color.new(color.blue, 30), style = plot.style_linebr)
+plot(useAsia ? asLoF : na, "Mínimo Asia", color = color.new(color.blue, 30), style = plot.style_linebr)
+plot(usePivots ? liqHi : na, "Liquidez arriba (pivote)", color = color.new(color.red, 50), style = plot.style_linebr)
+plot(usePivots ? liqLo : na, "Liquidez abajo (pivote)", color = color.new(color.teal, 50), style = plot.style_linebr)
+plot(strategy.position_size > 0 ? longStop : na,  "Stop largo", color = color.red, style = plot.style_linebr, linewidth = 2)
+plot(strategy.position_size < 0 ? shortStop : na, "Stop corto", color = color.red, style = plot.style_linebr, linewidth = 2)
+plot(strategy.position_size > 0 ? longTp : na,  "TP largo", color = color.lime, style = plot.style_linebr, linewidth = 2)
+plot(strategy.position_size < 0 ? shortTp : na, "TP corto", color = color.lime, style = plot.style_linebr, linewidth = 2)
+
+plotshape(rawSweepLow,  "Barrido de liquidez abajo", shape.diamond, location.belowbar, color.new(color.aqua, 0), size = size.tiny)
+plotshape(rawSweepHigh, "Barrido de liquidez arriba", shape.diamond, location.abovebar, color.new(color.orange, 0), size = size.tiny)
+bgcolor(newsBlock ? color.new(color.yellow, 88) : na, title = "Horario de noticias bloqueado")
+
+// ───────── Panel de información ─────────
+var table tb = table.new(position.top_right, 2, 12, bgcolor = color.new(color.black, 15),
+     border_color = color.new(color.gray, 60), border_width = 1)
+
+setRow(r, a, b, c) =>
+    table.cell(tb, 0, r, a, text_color = color.silver, text_size = size.small, text_halign = text.align_left)
+    table.cell(tb, 1, r, b, text_color = c, text_size = size.small, text_halign = text.align_left)
+
+if showTable and barstate.islast
+    trendTxt = htfBull ? "Alcista → buscar LONG" : htfBear ? "Bajista → buscar SHORT" : "Neutral → esperar"
+    setRow(0, "Tendencia 1H", trendTxt, htfBull ? color.lime : htfBear ? color.red : color.gray)
+    setRow(1, "Zona LONG (compra)", fmt(pdl) + " – " + fmt(eq), color.lime)
+    setRow(2, "Zona SHORT (venta)", fmt(eq) + " – " + fmt(pdh), color.red)
+    setRow(3, "Rango Asia", useAsia and not na(asHiF) ? fmt(asLoF) + " – " + fmt(asHiF) : "—", color.aqua)
+
+    posSize = strategy.position_size
+    avgP    = strategy.position_avg_price
+    curSl   = posSize > 0 ? longStop : posSize < 0 ? shortStop : na
+    curTp   = posSize > 0 ? longTp : posSize < 0 ? shortTp : na
+    setRow(4, "Posición", posSize > 0 ? "LARGO" : posSize < 0 ? "CORTO" : "Sin posición",
+         posSize > 0 ? color.lime : posSize < 0 ? color.red : color.white)
+    setRow(5, "Entrada", posSize != 0 ? fmt(avgP) : "—", color.white)
+    setRow(6, "Stop (SL)", posSize != 0 ? fmt(curSl) + "  (" + str.tostring(toTicks(avgP - curSl)) + " ticks)" : "—", color.red)
+    setRow(7, "Take profit", posSize != 0 and not na(curTp) ? fmt(curTp) + "  (" + str.tostring(toTicks(curTp - avgP)) + " ticks)" : posSize != 0 ? "Trailing" : "—", color.lime)
+    setRow(8, "Último resultado", lastResult, color.white)
+    total = strategy.closedtrades
+    winRate = total > 0 ? (tpHits + otherWins) / total * 100 : 0.0
+    setRow(9, "Operaciones", str.tostring(total) + " | TP " + str.tostring(tpHits) + " | BE " + str.tostring(beCount) +
+         " | SL " + str.tostring(stopLosses) + " | gana " + str.tostring(winRate, "#.#") + "%", color.white)
+    setRow(10, "Hoy", str.tostring(tradesToday) + " de " + str.tostring(maxTrades) + " operaciones" +
+         (newsBlock ? " | NOTICIAS" : ""), newsBlock ? color.yellow : color.white)
+    setRow(11, "Pérdida desde máximo", str.tostring(ddPct, "#.##") + "% de " + str.tostring(maxDD, "#") +
+         "% | margen $" + str.tostring(roomToStop, "#,###.##"), ddPct >= maxDD * 0.7 ? color.orange : color.white)

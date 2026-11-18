@@ -77,6 +77,7 @@ class Params:
     spread: float = 0.30      # se paga una vez por operación (ida y vuelta)
     slippage: float = 0.10    # en la entrada (mercado) y en salidas por stop
     commPct: float = 0.0      # comisión % por lado (el .pine usa 0.01)
+    stopFirst: bool = False   # True: si stop y TP caen en la misma vela, cuenta el stop (pesimista)
     # Cuenta del usuario (simulación en USD)
     capital: float = 100.0
     qtyOz: float = 1.0        # 0,01 lote = 1 onza
@@ -366,6 +367,8 @@ def run(prep: Prepared, p: Params) -> Result:
         # ── 2) Dentro de la vela: stop / take profit ──
         if pos != 0:
             hi_first = (h[i] - o[i]) <= (o[i] - l[i])
+            if p.stopFirst:
+                hi_first = pos < 0
             exit_px, why = None, ""
             if pos > 0:
                 tp_hit = not _isnan(curTp) and h[i] >= curTp
